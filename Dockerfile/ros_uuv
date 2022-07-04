@@ -1,0 +1,29 @@
+FROM ubuntu:20.04
+RUN rm /etc/apt/apt.conf.d/docker-clean
+RUN apt-get update && apt-get install -y lsb-release && apt-get clean all
+RUN apt-get install -y ca-certificates wget
+RUN apt-get install -y curl # if you haven't already installed curl
+RUN apt-get install -y gnupg2
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN apt-get update
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y ros-noetic-ros-base \
+   bash-completion \
+   iputils-ping \
+   net-tools \
+   vim \
+   byobu \
+   git \
+   feh
+RUN apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+RUN useradd --create-home --shell /bin/bash ros
+RUN usermod -aG sudo ros
+RUN echo 'uuv\nuuv' | passwd
+RUN echo 'uuv\nuuv' | passwd ros
+RUN cp /etc/skel/.bashrc /home/ros
+RUN rosdep init
+RUN rosdep update
+USER ros
+WORKDIR /home/ros
+RUN echo 'source /opt/ros/melodic/setup.bash' >> ~/.bashrc

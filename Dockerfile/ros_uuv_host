@@ -1,0 +1,69 @@
+# image based on ubuntu 20.04
+FROM ubuntu:20.04
+RUN rm /etc/apt/apt.conf.d/docker-clean
+RUN apt update && apt-get install -y lsb-release && apt-get clean all
+
+# for managing apt keyrings and installing other packages
+RUN apt install -y ca-certificates \
+    wget \
+    curl \
+    gnupg2
+
+# for installing ros
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN apt update
+ARG DEBIAN_FRONTEND=noninteractive
+
+# ros
+RUN apt install -y ros-noetic-desktop-full \
+    ros-noetic-teleop-twist-keyboard \
+    ros-noetic-rqt-multiplot \
+    ros-noetic-socketcan-bridge
+
+# compiler
+RUN apt install -y build-essential
+
+# command line utilities
+RUN apt install -y bash-completion \
+    zsh \
+    byobu \
+    tmux
+
+# other utilities
+RUN apt install -y net-tools \
+    iputils-ping \
+    vim \
+    git \
+    feh
+
+RUN apt install -y python3-pip \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-rosinstall-generator \
+    python3-wstool
+
+# adding user "ros" on host "uuv"
+RUN useradd --create-home --shell /bin/bash ros
+RUN usermod -aG sudo ros
+
+# password "uuv"
+RUN echo 'uuv\nuuv' | passwd
+RUN echo 'uuv\nuuv' | passwd ros
+
+# have to run rosdep as root
+RUN rosdep init
+
+# change to user "ros" and change to home directory
+USER ros
+WORKDIR /home/ros
+
+# update python enviroment in ros
+RUN rosdep update
+
+# copy .bashrc and modify it to source ros and workspace "ws"
+RUN cp /etc/skel/.bashrc /home/ros
+RUN chown ros /home/ros/.bashrc
+RUN echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
+RUN echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
+RUN mkdir -p /home/ros/ws/src
