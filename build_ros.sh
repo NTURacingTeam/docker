@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# declare taxt styles
+# declare text styles
 COLOR_REST='\e[0m'
 HIGHLIGHT='\e[0;1m'
 REVERSE='\e[0;7m'
@@ -8,50 +8,63 @@ COLOR_GREEN='\e[0;32m'
 COLOR_RED='\e[1;31m'
 
 # add display host
-if [ $(uname) = "Linux" ]; then
+if [ $(uname) == "Linux" ]; then
     xhost local:root
     xhost +local:root
 fi
 
 # build docker image
+# container name
+read -p "What name do you want to name the container? " NAME
+while [[ -n $(docker container list --all | grep -w ${NAME}) ]]; do
+    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The image name has already taken${COLOR_REST}"
+    read -p "Please choose another name: " NAME
+done
+if ! [[ -e "container_name.txt" ]]; then
+    echo "This is an auto generated file. PLEASE DO NOT EDIT." > container_name.txt
+fi
+echo ${NAME} >> container_name.txt
+
+# image type
 read -p "Which image do you want to build? (host/rpi):" TASK
-while [[ "${TASK}" != "host" && "${TASK}" != "rpi" ]]; do
+while [[ ${TASK} != "host" && ${TASK} != "rpi" ]]; do
     echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown image type${COLOR_REST}"
     read -p "Please enter correct image type. (host/rpi):" TASK
 done
 
+# build wiith or without cache
 read -p "Do you want to build with cache? (y/n):" WITH_CACHE
 while true; do
-    if [[ "${WITH_CACHE}" == "y" || "${WITH_CACHE}" == "yes" ]]; then
+    if [[ ${WITH_CACHE} == "y" || ${WITH_CACHE} == "yes" ]]; then
         echo "Going to build ${TASK} with cache"
-        if [ "${TASK}" == "host" ]; then
-            docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host .
+        if [ ${TASK} == "host" ]; then
+            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_host .
         else
-            docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi .
+            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_rpi .
         fi
         break
-    elif [[ "${WITH_CACHE}" == "n" || "${WITH_CACHE}" == "no" ]] ; then
+    elif [[ ${WITH_CACHE} == "n" || ${WITH_CACHE} == "no" ]] ; then
         echo "Going to build ${TASK} with no cache"
-        if [ "${TASK}" == "host" ]; then
-            docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host . --no-cache
+        if [ ${TASK} == "host" ]; then
+            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_host . --no-cache
         else
-            docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi . --no-cache
+            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_rpi . --no-cache
         fi
         break
     else
         echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}"
-        read -p "Please enter correct option. (y/n):" WITH_CACHE
+        read -p "Please enter correct option. (y/n): " WITH_CACHE
     fi
 done
 
-# pull nturt git down
-mkdir packages
-echo "Proceeding to pull git files from NTURacingTeam"
-echo -e "${HIGHLIGHT}Note this is a private repository, and you need github ssh key to pull successfully${COLOR_REST}"
+# pull NTURacingTeam git repositpry
+mkdir -p packages/${NAME}
+echo "Proceeding to pull git files from NTURacingTeam repositpry"
+echo -e "${HIGHLIGHT}Note this is a private repository, and you need to have setup github ssh key to pull successfully${COLOR_REST}"
 read -p "Do you want to proceed? (y/n):" TO_PULL
 while true; do
-    if [[ "${TO_PULL}" == "y" || "${TO_PULL}" == "yes" ]]; then
-        cd packages
+    if [[ ${TO_PULL} == "y" || ${TO_PULL} == "yes" ]]; then
+        cd packages/${NAME}
         if ! [[ -d "nturt_can_parser" ]]; then
             git clone git@github.com:NTURacingTeam/nturt_can_parser.git
             cd nturt_can_parser && git checkout dev_new_def && cd ..
@@ -73,21 +86,49 @@ while true; do
         if ! [[ -d "nturt_torque_cmd" ]]; then
             git clone git@github.com:NTURacingTeam/nturt_torque_cmd.git
         fi
-        cd ..
+        cd .. && cd ..
         break
-    elif [[ "${TO_PULL}" == "n" || "${TO_PULL}" == "no" ]]; then
+    elif [[ ${TO_PULL} == "n" || ${TO_PULL} == "no" ]]; then
         break
     else
         echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}"
         read -p "Please enter correct option. (y/n):" TO_PULL
     fi
-done 
+done
 
 # attach to the container
 if [ "${TASK}" == "host" ]; then
-    ./start_docker_host.sh run
-    ./start_docker_host.sh shell
+    ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') # don't know what this is
+    docker run -itd -u $(id -u):$(id -g) \
+        --privileged \
+        --env="QT_X11_NO_MITSHM=1" \
+        --env="DISPLAY=$ip:0" \
+        --volume="/dev:/dev:rw" \
+        --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+        --volume="$(pwd)/packages/${NAME}:/home/ros/ws/src:rw" \
+        --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+        --volume="/etc/localtime:/etc/localtime:ro" \
+        --hostname uuv \
+        --add-host uuv:127.0.1.1 \
+        -p 8080:8080 \
+        --name ${NAME} \
+        -u ros \
+        ros_uuv_host
+    docker exec -d topic bash -c "source /opt/ros/noetic/setup.bash && cd ws && pwd && catkin_make"
 else
-    ./start_docker_rpi.sh run
-    ./start_docker_rpi.sh shell
+    ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') # don't know what this is
+    docker run -itd -u $(id -u):$(id -g) \
+        --privileged \
+        --network host \
+        --env="DISPLAY" \
+        --env="QT_X11_NO_MITSHM=1" \
+        --volume="/dev:/dev:rw" \
+        --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+        --volume="$(pwd)/uuv_ws:/home/ros:rw" \
+        --hostname uuv \
+        --add-host uuv:127.0.1.1 \
+        --name uuv_rpi \
+        -u ros \
+        ros_uuv_rpi
+    docker exec -d topic bash -c "source /opt/ros/noetic/setup.bash && cd ws && pwd && catkin_make"
 fi
