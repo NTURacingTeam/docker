@@ -34,17 +34,17 @@ while true; do
     if [[ ${WITH_CACHE} == "y" || ${WITH_CACHE} == "yes" ]]; then
         echo "Going to build ${TASK} with cache"
         if [ ${TASK} == "host" ]; then
-            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_host .
+            docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host .
         else
-            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_rpi .
+            docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi .
         fi
         break
     elif [[ ${WITH_CACHE} == "n" || ${WITH_CACHE} == "no" ]] ; then
         echo "Going to build ${TASK} with no cache"
         if [ ${TASK} == "host" ]; then
-            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_host . --no-cache
+            docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host . --no-cache
         else
-            docker build -t ${NAME} -f ./Dockerfile/ros_uuv_rpi . --no-cache
+            docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi . --no-cache
         fi
         break
     else
@@ -55,7 +55,7 @@ done
 
 # pull NTURacingTeam git repositpry
 mkdir -p packages/${NAME}
-echo "Proceeding to pull git files from NTURacingTeam repositpry"
+echo "Proceeding to pull git files from NTURacingTeam repository"
 echo -e "${HIGHLIGHT}Note this is a private repository, and you need to have setup github ssh key to pull successfully${COLOR_REST}"
 read -p "Do you want to proceed? (y/n):" TO_PULL
 while true; do
@@ -129,7 +129,7 @@ else
         --volume="$(pwd)/uuv_ws:/home/ros:rw" \
         --hostname uuv \
         --add-host uuv:127.0.1.1 \
-        --name uuv_rpi \
+        --name ${NAME} \
         -u ros \
         ros_uuv_rpi
     # build ws with empty src

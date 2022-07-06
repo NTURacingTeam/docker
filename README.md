@@ -7,7 +7,7 @@ Install docker on your computer, checkout [Install Docker Engine on Ubuntu](http
 ```bash=
 ./build_ros.sh
 ```
-There will be two availible images for you to chooes form, host and rpi.
+There will be two availible images for you to chooes form, host and rpi (which will create docker image ros_uuv_host and ros_uuv_rpi, respectively).
 
 The difference between host and rpi is mainly on the ros version we installed. Basically host version will included some visual tools. 
 In the future we plan to debug the machine via uuv_host container on our host while running uuv_rpi container on the raspberry pi.
