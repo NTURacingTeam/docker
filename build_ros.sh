@@ -20,10 +20,6 @@ while [[ -n $(docker container list --all | grep -w ${NAME}) ]]; do
     echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The image name has already taken${COLOR_REST}"
     read -p "Please choose another name: " NAME
 done
-if ! [[ -e "container_name.txt" ]]; then
-    echo "This is an auto generated file. PLEASE DO NOT EDIT." > container_name.txt
-fi
-echo ${NAME} >> container_name.txt
 
 # image type
 read -p "Which image do you want to build? (host/rpi):" TASK
@@ -114,7 +110,13 @@ if [ "${TASK}" == "host" ]; then
         --name ${NAME} \
         -u ros \
         ros_uuv_host
-    docker exec -d topic bash -c "source /opt/ros/noetic/setup.bash && cd ws && pwd && catkin_make"
+    # build ws with empty src
+    docker exec -d ${NAME} bash -c "source /opt/ros/noetic/setup.bash && cd ws && catkin_make"
+    # installing mujoco
+    docker exec -d ${NAME} bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
+    docker exec -d ${NAME} bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
+    docker exec -d ${NAME} bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/mujoco210"
+    docker exec -it ${NAME} bash
 else
     ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') # don't know what this is
     docker run -itd -u $(id -u):$(id -g) \
@@ -130,5 +132,7 @@ else
         --name uuv_rpi \
         -u ros \
         ros_uuv_rpi
-    docker exec -d topic bash -c "source /opt/ros/noetic/setup.bash && cd ws && pwd && catkin_make"
+    # build ws with empty src
+    docker exec -d ${NAME} bash -c "source /opt/ros/noetic/setup.bash && cd ws && catkin_make"
+    docker exec -it ${NAME} bash
 fi

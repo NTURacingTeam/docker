@@ -44,6 +44,8 @@ RUN apt install -y python3-pip \
     python3-rosinstall-generator \
     python3-wstool
 
+RUN pip3 install mujoco
+
 # adding user "ros" on host "uuv"
 RUN useradd --create-home --shell /bin/bash ros
 RUN usermod -aG sudo ros

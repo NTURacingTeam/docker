@@ -17,24 +17,21 @@ else
 fi
 while true; do
     if [ ${COMMAND} == "run" ]; then
-        if ! [[ -e "container_name.txt" ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No container has being built by the provided script, please build one first${COLOR_REST}"
-        elif [[ -z $(sed -n '2,$p' container_name.txt) ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Containers built by the provided script were all removed, please build one first${COLOR_REST}"
+        if [[ -z $(docker container list -f "status=exited" | sed -n '2,$p') ]]; then
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}All containers are running or no container has been built, please build one first${COLOR_REST}"
         else
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
                 echo "The following are the containers you can run:"
-                sed -n '2,$p' container_name.txt
+                docker container list -f "status=exited"
                 read -p "What container do you want to run? " NAME
             else
                 NAME=$2
             fi
-            if [[ -z $(sed -n '2,$p' container_name.txt | grep -w ${NAME}) ]]; then
-                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is not built using the provided script, \
-please build one first${COLOR_REST}"
+            if [[ -z $(docker container list -f "status=exited" | sed -n '2,$p' | grep -w ${NAME}) ]]; then
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is running, please build it first${COLOR_REST}"
             elif [[ -n $(docker container list | grep -w ${NAME}) ]]; then
-                echo "The container is already running"
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container is already running${COLOR_REST}"
             else
                 echo "Starting ${NAME}"
                 docker start ${NAME}
@@ -42,22 +39,19 @@ please build one first${COLOR_REST}"
         fi
         break
     elif [ ${COMMAND} == "shell" ]; then
-        if ! [[ -e "container_name.txt" ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No container has being built by the provided script, please build one first${COLOR_REST}"
-        elif [[ -z $(sed -n '2,$p' container_name.txt) ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Containers built by the provided script were all removed, please build one first${COLOR_REST}"
+        if [[ -z $(docker container list -a | sed -n '2,$p') ]]; then
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No containers has been built, please build one first${COLOR_REST}"
         else
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
                 echo "The following are the containers you can attach into shell:"
-                sed -n '2,$p' container_name.txt
+                docker container list -a
                 read -p "What container do you want to attach into shell? " NAME
             else
                 NAME=$2
             fi
-            if [[ -z $(sed -n '2,$p'  container_name.txt | grep -w ${NAME}) ]]; then
-                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is not built using the provided script, \
-please build one first${COLOR_REST}"
+            if [[ -z $(docker container list -a | sed -n '2,$p' | grep -w ${NAME}) ]]; then
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist, please build it first${COLOR_REST}"
             elif [[ -n $(docker container list | grep -w ${NAME}) ]]; then
                 docker exec -it ${NAME} bash
             else
