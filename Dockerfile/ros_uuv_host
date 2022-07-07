@@ -44,6 +44,7 @@ RUN apt install -y python3-pip \
     python3-rosinstall-generator \
     python3-wstool
 
+# install mujoco python bindings
 RUN pip3 install mujoco
 
 # adding user "ros" on host "uuv"
@@ -64,7 +65,15 @@ WORKDIR /home/ros
 # update python enviroment in ros
 RUN rosdep update
 
+# prebuild ws once
+RUN bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
+
 # copy .bashrc and modify it to source ros and workspace "ws"
 RUN cp /etc/skel/.bashrc /home/ros
 RUN echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
-RUN echo 'source /home/ros/ws/build/setup.bash' >> ~/.bashrc
+RUN echo 'source /home/ros/ws/devel/setup.bash' >> ~/.bashrc
+
+# install mujoco
+RUN bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
+RUN bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
+RUN bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/"

@@ -33,17 +33,17 @@ read -p "Do you want to build with cache? (y/n):" WITH_CACHE
 while true; do
     if [[ ${WITH_CACHE} == "y" || ${WITH_CACHE} == "yes" ]]; then
         echo "Going to build ${TASK} with cache"
-        if [ ${TASK} == "host" ]; then
+        if [ ${TASK} == "host" ] && [[ -z $(docker image list | grep ros_uuv_host) ]]; then
             docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host .
-        else
+        elif [ ${TASK} == "rpi" ] && [[ -z $(docker image list | grep ros_uuv_rpi) ]]; then
             docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi .
         fi
         break
     elif [[ ${WITH_CACHE} == "n" || ${WITH_CACHE} == "no" ]] ; then
         echo "Going to build ${TASK} with no cache"
-        if [ ${TASK} == "host" ]; then
+        if [ ${TASK} == "host" ] && [[ -z $(docker image list | grep ros_uuv_host) ]]; then
             docker build -t ros_uuv_host -f ./Dockerfile/ros_uuv_host . --no-cache
-        else
+        elif [ ${TASK} == "rpi" ] && [[ -z $(docker image list | grep ros_uuv_rpi) ]]; then
             docker build -t ros_uuv_rpi -f ./Dockerfile/ros_uuv_rpi . --no-cache
         fi
         break
@@ -110,12 +110,6 @@ if [ "${TASK}" == "host" ]; then
         --name ${NAME} \
         -u ros \
         ros_uuv_host
-    # build ws with empty src
-    docker exec -d ${NAME} bash -c "source /opt/ros/noetic/setup.bash && cd ws && catkin_make"
-    # installing mujoco
-    docker exec -d ${NAME} bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
-    docker exec -d ${NAME} bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
-    docker exec -d ${NAME} bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/mujoco210"
     docker exec -it ${NAME} bash
 else
     ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') # don't know what this is
@@ -132,7 +126,5 @@ else
         --name ${NAME} \
         -u ros \
         ros_uuv_rpi
-    # build ws with empty src
-    docker exec -d ${NAME} bash -c "source /opt/ros/noetic/setup.bash && cd ws && catkin_make"
     docker exec -it ${NAME} bash
 fi
