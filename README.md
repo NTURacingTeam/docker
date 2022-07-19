@@ -32,7 +32,8 @@ The base image is 11.7.0-devel-ubuntu20.04, which is based on ubuntu 20.04 with 
     - ros-noetic-teleop-twist-keyboard (ros keyboard control)
     - ros-noetic-rqt-multiplot (ros ploting tool)
     - ros-noetic-socketcan-bridge (can message converter)
-- Mujoco
+- Nvidia-cuda-toolkit (for using gpu)
+- Mujoco (simulating environment for openAI-gym)
 - Command line utilities
     - bash-completion (for completing commands)
     - zsh (for completing commands)
@@ -51,6 +52,7 @@ There will also be python3 packages preinstalled:
 - python3-rosinstall (ros)
 - python3-rosinstall-generator (ros)
 - python3-wstool (ros)
+- openAI-gym (learning engine)
 - mujoco-py (bindings for mujoco in python)
 
 #### ROS enviroment

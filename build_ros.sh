@@ -96,6 +96,7 @@ done
 if [ "${TASK}" == "host" ]; then
     ip=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') # don't know what this is
     docker run -itd -u $(id -u):$(id -g) \
+        --gpus all \
         --privileged \
         --env="QT_X11_NO_MITSHM=1" \
         --env="DISPLAY=$ip:0" \
