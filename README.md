@@ -18,7 +18,22 @@ There will be other option prompts for you to chooes when installing, please cho
 
 > Note: In order to connect to the container by interent, port `8080` with host ip `127.0.1.1` is designated for the container, so you can only run a container at a time that was built by `build_ros.sh` script.
 
-#### What will be installed
+### Entering the container
+While the `build_ros.sh` script is specificly designed for building a container with features listed above, the `start_docker.sh` script provided universal run/shell/stop utilities, so it may also used for controlling other containers that were not built by `build_ros.sh` script.
+```bash=
+./start_docker.sh
+```
+you will be prompted by different commands to control the containers
+
+The script also support bash arguements as a short hand
+```bash=
+./start_docker.sh COMMAND CONTAINER_NAME
+```
+where COMMAND can be run/shell/stop for your needs.
+> Note the password in the container for default user `ros` is `uuv`.
+
+## Container environment
+### What will be installed
 The base image is 11.7.0-devel-ubuntu20.04, which is based on ubuntu 20.04 with full Nvida cuda support and has the following applications preinstalled:
 - For managing apt keyrings and installing other packages
     - ca-certificates
@@ -55,7 +70,7 @@ There will also be python3 packages preinstalled:
 - openAI-gym (learning engine)
 - mujoco-py (bindings for mujoco in python)
 
-#### ROS enviroment
+### ROS enviroment
 There will be ros workspace directory preconfigured in `/home/ros/ws` and its subdirectory `src` mounted to the host as `./packages/${container_name}`.
 
 The workspace `~/ws` has already been prebuild once, so there will also be `build` and `devel` directory beside the `src`.
@@ -67,23 +82,28 @@ source /opt/ros/noetic/setup.bash
 source ~/ws/devel/setup.bash
 ```
 has already beign included in `.bashrc` file, so there is no need to source them everytime.
-### Entering the container
-While the `build_ros.sh` script is specificly designed for building a container with features listed above, the `start_docker.sh` script provided universal run/shell/stop utilities, so it may also used for controlling other containers that were not built by `build_ros.sh` script.
-```bash=
-./start_docker.sh
-```
-you will be prompted by different commands to control the containers
-
-The script also support bash arguements as a short hand
-```bash=
-./start_docker.sh COMMAND CONTAINER_NAME
-```
-where COMMAND can be run/shell/stop for your needs.
 
 ## Known Issues
-1. We have some issues when building on WSL. Such as using byobu and visualize environments.
-2. Not tested on rpi yet.
-3. If it is on **Debian**, follow the steps to solve libseccomp:
+1. When encounter such problem:
+
+    ![](https://i.imgur.com/PolAf57.png)
+
+    or similar problem, try
+    ```bash=
+    printenv DISPLAY
+    ```
+    in both docker and local computer, if the results differ, try
+    ```bash=
+    export DISPLAY=:n
+    ```
+    where n is the environment variable DISPLAY from the localcomputer.
+    And put it into `.bashrc` once for all by
+    ```bash=
+    echo 'export DISPLAY=:n' >> ~/.bashrc
+    ```
+2. We have some issues when building on WSL. Such as using byobu and visualize environments.
+3. Not tested on rpi yet.
+4. If it is on **Debian**, follow the steps to solve libseccomp:
 ```bash=
 #download from https://packages.debian.org/sid/libseccomp2, for example: 
 wget http://ftp.tw.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.3-2_armhf.deb
