@@ -41,7 +41,8 @@ RUN apt install -y ros-noetic-desktop-full \
 RUN apt install -y nvidia-cuda-toolkit
 
 # compiler
-RUN apt install -y build-essential
+RUN apt install -y build-essential \
+    swig
 
 # command line utilities
 RUN apt install -y bash-completion \
@@ -64,10 +65,18 @@ RUN apt install -y python3-pip \
     python3-wstool
 
 # install oopenAI-gym
-RUN pip3 install gym
+RUN pip3 install gym[mujoco]
 
-# install mujoco python bindings
-RUN pip3 install mujoco
+# install mujoco prerequisites
+RUN apt install libosmesa6-dev \
+    libgl1-mesa-glx \
+    libglfw3 \
+    libgl1-mesa-dev \
+    libglew-dev \
+    pathchelf
+
+# install mujoco python bindings that's required for openAI-gym
+RUN pip3 install mujoco-py
 
 # install pythorch
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
@@ -102,3 +111,5 @@ RUN echo 'source /home/ros/ws/devel/setup.bash' >> ~/.bashrc
 RUN bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
 RUN bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
 RUN bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/"
+RUN echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ros/.mujoco/mujoco210/bin' >> ~/.bashrc
+RUN echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc
