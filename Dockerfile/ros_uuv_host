@@ -8,7 +8,7 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
     && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean
 
 # update package information and install linux standard base
-RUN apt update && apt install -y lsb-release
+RUN apt-get update && apt-get install -y lsb-release
 
 # configuring tzdata to taipei timezone without prompt
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
@@ -18,10 +18,10 @@ RUN TZ=Asia/Taipei \
     && dpkg-reconfigure -f noninteractive tzdata
 
 # configuring key-board configuration without prompt
-RUN DEBIAN_FRONTEND=noninteractive apt install -y keyboard-configuration
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration
 
 # for managing apt keyrings and installing other packages
-RUN apt install -y ca-certificates \
+RUN apt-get install -y ca-certificates \
     wget \
     curl \
     gnupg2
@@ -29,36 +29,36 @@ RUN apt install -y ca-certificates \
 # add apt key for installing ros
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-RUN apt update
+RUN apt-get update
 
 # ros
-RUN apt install -y ros-noetic-desktop-full \
+RUN apt-get install -y ros-noetic-desktop-full \
     ros-noetic-teleop-twist-keyboard \
     ros-noetic-rqt-multiplot \
     ros-noetic-socketcan-bridge
 
 # install nvidia cuda toolkit
-RUN apt install -y nvidia-cuda-toolkit
+RUN apt-get install -y nvidia-cuda-toolkit
 
 # compiler
-RUN apt install -y build-essential \
+RUN apt-get install -y build-essential \
     swig
 
 # command line utilities
-RUN apt install -y bash-completion \
+RUN apt-get install -y bash-completion \
     zsh \
     byobu \
     tmux
 
 # other utilities
-RUN apt install -y net-tools \
+RUN apt-get install -y net-tools \
     iputils-ping \
     vim \
     git \
     feh
 
 # ros python packages
-RUN apt install -y python3-pip \
+RUN apt-get install -y python3-pip \
     python3-rosdep \
     python3-rosinstall \
     python3-rosinstall-generator \
