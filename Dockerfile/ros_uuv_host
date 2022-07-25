@@ -64,19 +64,22 @@ RUN apt-get install -y python3-pip \
     python3-rosinstall-generator \
     python3-wstool
 
-# install oopenAI-gym
-RUN pip3 install gym[mujoco]
-
 # install mujoco prerequisites
 RUN apt install libosmesa6-dev \
     libgl1-mesa-glx \
     libglfw3 \
     libgl1-mesa-dev \
     libglew-dev \
-    pathchelf
+    patchelf
 
 # install mujoco python bindings that's required for openAI-gym
 RUN pip3 install mujoco-py
+
+# install openAI-gym (may be replaced by envpool)
+RUN pip3 install gym[mujoco]
+
+# install envpool
+RUN pip install envpool
 
 # install pythorch
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
