@@ -1,5 +1,5 @@
 # image based on ubuntu 20.04 with full support nvidia cuda with version 11.7.0
-FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
+FROM nvidia/cuda:11.7.0-base-ubuntu20.04
 
 # docker specific tweaks, see
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
@@ -72,8 +72,42 @@ RUN apt-get install -y libosmesa6-dev \
     libglew-dev \
     patchelf
 
-# install mujoco python bindings that's required for openAI-gym
-RUN pip3 install mujoco-py
+# adding user "ros" on host "uuv"
+RUN useradd --create-home --shell /bin/bash docker
+RUN usermod -aG sudo docker
+
+# password "docker" for user 'root' and 'docker'
+RUN echo 'docker\ndocker' | passwd
+RUN echo 'docker\ndocker' | passwd docker
+
+# have to run rosdep as root
+RUN rosdep init
+
+# change to user "docker" and change to home directory
+USER docker
+WORKDIR /home/docker
+
+# update python enviroment in ros
+RUN rosdep update
+
+# prebuild ws once
+RUN bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
+
+# copy .bashrc and modify it to source ros and workspace "ws"
+RUN cp /etc/skel/.bashrc /home/docker
+RUN echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
+RUN echo 'source /home/docker/ws/devel/setup.bash' >> ~/.bashrc
+
+# install mujoco
+RUN bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
+RUN bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
+RUN bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/"
+RUN echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin' >> ~/.bashrc
+RUN echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc
+
+# install python libraries in non-root to prevent permission problems
+# add local python library path to PATH environment variable
+RUN echo 'export PATH=:$PATH:~/.local/bin' >> ~/.bashrc
 
 # install openAI-gym (may be replaced by envpool)
 RUN pip3 install gym[mujoco]
@@ -84,35 +118,5 @@ RUN pip install envpool
 # install pythorch
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 
-# adding user "ros" on host "uuv"
-RUN useradd --create-home --shell /bin/bash ros
-RUN usermod -aG sudo ros
-
-# password "uuv"
-RUN echo 'uuv\nuuv' | passwd
-RUN echo 'uuv\nuuv' | passwd ros
-
-# have to run rosdep as root
-RUN rosdep init
-
-# change to user "ros" and change to home directory
-USER ros
-WORKDIR /home/ros
-
-# update python enviroment in ros
-RUN rosdep update
-
-# prebuild ws once
-RUN bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
-
-# copy .bashrc and modify it to source ros and workspace "ws"
-RUN cp /etc/skel/.bashrc /home/ros
-RUN echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
-RUN echo 'source /home/ros/ws/devel/setup.bash' >> ~/.bashrc
-
-# install mujoco
-RUN bash -c "wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz"
-RUN bash -c "tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz"
-RUN bash -c "mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/"
-RUN echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ros/.mujoco/mujoco210/bin' >> ~/.bashrc
-RUN echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc
+# install mujoco python bindings that's required for openAI-gym
+RUN pip3 install mujoco-py
