@@ -1,5 +1,5 @@
-# image based on ubuntu 20.04 with full support nvidia cuda with version 11.7.0
-FROM nvidia/cuda:11.7.0-base-ubuntu20.04
+# image based on ubuntu 20.04
+FROM ubuntu:20.04
 
 # docker specific tweaks, see
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
@@ -17,15 +17,8 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # git -> version control
 # gnupg2 -> encryption
 # keyboard-configuration -> keyboard configuration
-# libgl1-mesa-dev -> mujoco-py dependancy
-# libgl1-mesa-glx -> mujoco-py dependancy
-# libglew-dev -> mujoco-py dependancy
-# libglfw3 -> mujoco-py dependancy
-# libosmesa6-dev -> mujoco-py dependancy
 # lsb-release -> linux standard base
 # net-tools -> network configurator
-# nvidia-cuda-toolkit -> for using gpu
-# patchelf -> mujoco-py dependancy
 # python3-pip -> python package manager
 # swig -> wrapper for C/C++ to connect to scripting language
 # tmux -> terminal multiplexer
@@ -43,15 +36,8 @@ RUN apt-get update && \
     git \
     gnupg2 \
     keyboard-configuration \
-    libgl1-mesa-dev \
-    libgl1-mesa-glx \
-    libglew-dev \
-    libglfw3 \
-    libosmesa6-dev \
     lsb-release \
     net-tools \
-    nvidia-cuda-toolkit \
-    patchelf \
     python3-pip \
     swig \
     tmux \
@@ -71,9 +57,7 @@ RUN TZ=Asia/Taipei \
 # python3-rosinstall -> ros installation tool
 # python3-rosinstall-generator -> ros install file generator
 # python3-wstool -> ros version control
-# ros-noetic-desktop-full -> ros
-# ros-noetic-teleop-twist-keyboard -> ros keyboard control
-# ros-noetic-rqt-multiplot -> ros multi-plotting tool
+# ros-noetic-ros_base -> ros base version
 # ros-noetic-socketcan-bridge -> ros can tool
 # initialize ros python environment as root
 RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
@@ -83,9 +67,7 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     python3-rosinstall \
     python3-rosinstall-generator \
     python3-wstool \
-    ros-noetic-desktop-full \
-    ros-noetic-teleop-twist-keyboard \
-    ros-noetic-rqt-multiplot \
+    ros-noetic-ros_base \
     ros-noetic-socketcan-bridge \
     && apt-get clean && apt-get autoremove \
     && rosdep init
@@ -106,30 +88,11 @@ WORKDIR /home/docker
 RUN rosdep update \
     && bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
 
-# install mujoco
-RUN wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-linux-x86_64.tar.gz \
-    && tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz \ 
-    && mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/
-
 # copy .bashrc for executing it everytime attaching to the container and modify it to
-# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin -> mujoco environment variable
-# export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so -> mujoco environment variable
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
 # source /home/docker/ws/devel/setup.bash -> source ros workspace "ws"
 # source /opt/ros/noetic/setup.bash -> source ros 
 RUN cp /etc/skel/.bashrc /home/docker \
-    && echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin' >> ~/.bashrc \
-    && echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc \
     && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
     && echo 'source /home/docker/ws/devel/setup.bash' >> ~/.bashrc \
     && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
-
-# install python libraries in non-root to prevent permission problems
-# envpool -> simulating envrionment manager (but faster than opanAI-gym)
-# gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
-# mujoco-py -> bindings for mujoco that's required for opneAI-gym
-# pythorch -> machine learing engine
-RUN pip3 install envpool \
-    gym[mujoco] \
-    mujoco-py \
-    torch torchvision torchaudio

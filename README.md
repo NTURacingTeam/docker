@@ -2,25 +2,31 @@
 
 ## Before you start
 
-Install docker on your computer, checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+Install docker on your computer, please checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 
 ## Usage
 
-### Build an image
+In order to use docker, first you have to build an image, and then create a container.
 
-Build a docker image from directory `Dockerfile` by
+There two bash scripts provided to simplify the use of docker virtual environment, namely `build_image.sh` for building images and `start_container.sh` for managing containers.
+
+### build_image.sh
+
+This script is used for building a docker image for a container to run on, use this script by
 
 ```bash=
 ./build_image.sh
 ```
 
-you will be prompted by different commands to build differernt images.
+you will be prompted to choose which docker image from dockerfiles in `Dockerfile` to build from.
 
 > Note: The image name will be the same as the `dockerfile`'s name.
 
 If an existing image has the same name as the `dockerfile`'s name and the tag is `latest`, an option will prompt you to choose whether to change the existing image's tag to `older_versionX` and build the new image with tag `latest`.
 
-The script also support bash arguements as a short hand
+#### Using bash arguments
+
+The script also support bash arguemnts as a short hand
 
 ```bash=
 ./build_image.sh IMAGE_FILE REPLACE_OPTION
@@ -28,35 +34,56 @@ The script also support bash arguements as a short hand
 
 where `IMAGE_FILE` is the dockerfile name in directory `Dockerfile` and `REPLACE_OPTION`(y/n) for controlling whether to change the tag of an image with same name to older vison.
 
-### What image to build
+#### Choosing which image to build
 
-There are currently two images, for more information, please refer to `` in latter section.
+The following are provided images:
+- fun_time_with_arthur: image with ros and machine learning libraries
+- ros_host: image with ros for desktop use
+- ros_matlab: image with ros and matlabfor desktop use
+- ros_rpi: image with ros for use on raspberry pi
 
-### Create a container
+For more information, please refer to `Image environment` in latter section.
 
-This script supports custom naming of your containers.
+### start_container.sh
 
-There will be other option prompts for you to chooes when installing, please choose accroding to youur needs.
-> Note: In order to connect to the container by interent, port `8080` with host ip `127.0.1.1` is designated for the container, so you can only run a container at a time that was created by `staert_docker.sh` script.
-
-### Entering the container
-
-While the `build_image.sh` script is specificly designed for building a container with features listed above, the `start_container.sh` script provided universal `create`/`run`/`shell`/`stop` utilities, so it may also used for controlling other containers that were not built by `build_image.sh` script.
+This script is used for managing a docker container, use this script by
 
 ```bash=
 ./start_container.sh
 ```
 
-you will be prompted by different commands to control the containers
+you will be prompted by different commands to manage docker containers:
 
-The script also support bash arguements as a short hand
+#### create
+
+This command create a container from existing images.
+
+> Note the host of the container will be the container's name and password in the container for default user `docker` is `docker`.
+
+> Note: In order to let the container be connectable to the interent, port `8080` with host ip `127.0.1.1` is designated for the container, so you can only run a container at a time that was created by `start_container.sh` script.
+
+#### run
+
+This command run a stopped container.
+
+#### shell
+
+This command attach to the shell of a container, if the container is not running, the script will run it first.
+
+#### stop
+
+This stop a running container.
+
+#### Using bash arguments
+
+
+The script also support bash arguments as a short hand
 
 ```bash=
 ./start_container.sh COMMAND CONTAINER_NAME IMAGE_NAME
 ```
 
-where `COMMAND` can be run/shell/stop for your needs, and `IMAGE_NAME` is for building container with specific image name.
-> Note the password in the container for default user `docker` is `docker`.
+where `COMMAND` is the command listed above, `CONTAINER_NAME` is the container you want to manage, and `IMAGE_NAME` is for building container with specific image name.
 
 ## Image environment
 
@@ -64,51 +91,147 @@ The following is the description of the image environments.
 
 ### fun_time_with_arthur
 
-The base image is 11.7.0-base-ubuntu20.04, which is based on ubuntu 20.04 with full Nvida cuda support and has the following applications preinstalled:
+The image is based on 11.7.0-base-ubuntu20.04, which is an ubuntu 20.04 image with Nvida cuda support and has the following applications installed:
 
-- For managing apt keyrings and installing other packages
-  - ca-certificates
-  - wget
-  - curl
-  - gnupg2
-- Compiler
-  - build-essential
-- Command line utilities
-  - bash-completion (for completing commands)
-  - zsh (for completing commands)
-  - byobu (terminal multiplexer)
-  - tmux (terminal multiplexer)
-- Other utilities
-  - net-tools (network configuration tool)
-  - iputils-ping (network configuration tool)
-  - vim (command line text editing tool)
-  - git (version control)
-  - feh (image viewer)
-- ROS
-  - ros-noetic-desktop-full (ros)
-  - ros-noetic-teleop-twist-keyboard (ros keyboard control)
-  - ros-noetic-rqt-multiplot (ros ploting tool)
-  - ros-noetic-socketcan-bridge (can message converter)
-- Nvidia-cuda-toolkit (for using gpu)
-- Mujoco (simulating environment for openAI-gym)
+- bash-completion -> bash auto-complete
+- build-essential -> compiler
+- byobu -> terminal multiplexer
+- ca-certificates -> certificate manager
+- curl -> internet commuincation library
+- feh -> image viewer
+- git -> version control
+- gnupg2 -> encryption
+- keyboard-configuration -> keyboard configuration
+- libgl1-mesa-dev -> mujoco-py dependancy
+- libgl1-mesa-glx -> mujoco-py dependancy
+- libglew-dev -> mujoco-py dependancy
+- libglfw3 -> mujoco-py dependancy
+- libosmesa6-dev -> mujoco-py dependancy
+- lsb-release -> linux standard base
+- net-tools -> network configurator
+- nvidia-cuda-toolkit -> for using gpu
+- patchelf -> mujoco-py dependancy
+- python3-pip -> python package manager
+- python3-rosdep -> ros dependencies manager
+- python3-rosinstall -> ros installation tool
+- python3-rosinstall-generator -> ros install file generator
+- python3-wstool -> ros version control
+- ros-noetic-desktop-full -> ros
+- ros-noetic-teleop-twist-keyboard -> ros keyboard control
+- ros-noetic-rqt-multiplot -> ros multi-plotting tool
+- ros-noetic-socketcan-bridge -> ros can tool
+- swig -> wrapper for C/C++ to connect to scripting language
+- tmux -> terminal multiplexer
+- tzdata -> timezone
+- vim -> command line text editor
+- wget -> downloader
 
-There will also be python3 packages preinstalled:
+And python packages:
 
-- python3-pip (package configuration tool)
-- python3-rosdep (ros)
-- python3-rosinstall (ros)
-- python3-rosinstall-generator (ros)
-- python3-wstool (ros)
-- openAI-gym (learning environment manger)
-- envpool (faster learning environment manger)
-- mujoco-py (bindings for mujoco in python)
-- pytorch (maching learning libary)
+- envpool -> simulating envrionment manager (but faster than opanAI-gym)
+- gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
+- mujoco-py -> bindings for mujoco that's required for opneAI-gym
+- pythorch -> machine learing engine
+
+### ros_host
+
+The image is based on ubuntu 20.04 with the following applications installed:
+
+- bash-completion -> bash auto-complete
+- build-essential -> compiler
+- byobu -> terminal multiplexer
+- ca-certificates -> certificate manager
+- curl -> internet commuincation library
+- feh -> image viewer
+- git -> version control
+- gnupg2 -> encryption
+- keyboard-configuration -> keyboard configuration
+- lsb-release -> linux standard base
+- net-tools -> network configurator
+- python3-pip -> python package manager
+- python3-rosdep -> ros dependencies manager
+- python3-rosinstall -> ros installation tool
+- python3-rosinstall-generator -> ros install file generator
+- python3-wstool -> ros version control
+- ros-noetic-desktop-full -> ros
+- ros-noetic-teleop-twist-keyboard -> ros keyboard control
+- ros-noetic-rqt-multiplot -> ros multi-plotting tool
+- ros-noetic-socketcan-bridge -> ros can tool
+- swig -> wrapper for C/C++ to connect to scripting language
+- tmux -> terminal multiplexer
+- tzdata -> timezone
+- vim -> command line text editor
+- wget -> downloader
+
+### ros_matlab
+
+The image is based on ubuntu 20.04 with the following applications installed:
+
+- bash-completion -> bash auto-complete
+- build-essential -> compiler
+- byobu -> terminal multiplexer
+- ca-certificates -> certificate manager
+- curl -> internet commuincation library
+- feh -> image viewer
+- git -> version control
+- gnupg2 -> encryption
+- keyboard-configuration -> keyboard configuration
+- lsb-release -> linux standard base
+- net-tools -> network configurator
+- python3-pip -> python package manager
+- python3-rosdep -> ros dependencies manager
+- python3-rosinstall -> ros installation tool
+- python3-rosinstall-generator -> ros install file generator
+- python3-wstool -> ros version control
+- ros-noetic-desktop-full -> ros
+- ros-noetic-teleop-twist-keyboard -> ros keyboard control
+- ros-noetic-rqt-multiplot -> ros multi-plotting tool
+- ros-noetic-socketcan-bridge -> ros can tool
+- swig -> wrapper for C/C++ to connect to scripting language
+- tmux -> terminal multiplexer
+- tzdata -> timezone
+- vim -> command line text editor
+- wget -> downloader
+
+And matlab products:
+- MATLAB
+- ROS_Toolbox
+- Simulink
+- Simscape
+
+### ros_rpi
+
+The image is based on ubuntu 20.04 with the following applications installed:
+
+- bash-completion -> bash auto-complete
+- build-essential -> compiler
+- byobu -> terminal multiplexer
+- ca-certificates -> certificate manager
+- curl -> internet commuincation library
+- feh -> image viewer
+- git -> version control
+- gnupg2 -> encryption
+- keyboard-configuration -> keyboard configuration
+- lsb-release -> linux standard base
+- net-tools -> network configurator
+- python3-pip -> python package manager
+- python3-rosdep -> ros dependencies manager
+- python3-rosinstall -> ros installation tool
+- python3-rosinstall-generator -> ros install file generator
+- python3-wstool -> ros version control
+- ros-noetic-ros_base -> ros base vversion
+- ros-noetic-socketcan-bridge -> ros can tool
+- swig -> wrapper for C/C++ to connect to scripting language
+- tmux -> terminal multiplexer
+- tzdata -> timezone
+- vim -> command line text editor
+- wget -> downloader
 
 ### ROS enviroment
 
-There will be ros workspace directory preconfigured in `/home/ros/ws` and its subdirectory `src` mounted to the host as `./packages/${container_name}`.
+There will be ros workspace directory preconfigured in `/home/docker/ws` and its subdirectory `src` mounted to the host as `./packages/CONTAINER_NAME`.
 
-The workspace `~/ws` has already been prebuild(catkin_make) once, so there will also be `build` and `devel` directory beside the `src`.
+The workspace `~/ws` has already been build(catkin_make) once, so there will also be `build` and `devel` directory beside the `src`.
 
 The general ros environment setup
 
@@ -117,12 +240,13 @@ source /opt/ros/noetic/setup.bash
 source ~/ws/devel/setup.bash
 ```
 
-has already beign included in `~/.bashrc` file, so there is no need to source them everytime.
+has already being included in `~/.bashrc` file, so there is no need to source them everytime.
 
 ## Known Issues
 
 1. We have some issues when building on WSL. Such as using byobu and visualize environments.
-2. If it is on **Debian**, follow the steps to solve libseccomp:
+2. Inorder to use matlab, you first have to have the license and the license for matlab cloud use. Campus-wide licenses are already configured for cloud use, if your authorization failed with error code `4402`, please contact your license provider.
+3. If it is on **Debian**, follow the steps to solve libseccomp:
   
     ```bash=
     #download from https://packages.debian.org/sid/libseccomp2, for example: 
