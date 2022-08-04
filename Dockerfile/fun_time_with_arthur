@@ -121,8 +121,8 @@ RUN cp /etc/skel/.bashrc /home/docker \
     && echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin' >> ~/.bashrc \
     && echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc \
     && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
-    && echo 'source /home/docker/ws/devel/setup.bash' >> ~/.bashrc \
-    && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
+    && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc \
+    && echo 'source ~/ws/devel/setup.bash' >> ~/.bashrc
 
 # install python libraries in non-root to prevent permission problems
 # envpool -> simulating envrionment manager (but faster than opanAI-gym)
