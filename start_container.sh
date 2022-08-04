@@ -57,12 +57,14 @@ while true; do
             done
 
             # create and attach to the container
-            echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image"
             # get ip address
             IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
             # get display environment variable
             DISPLAY=$(printenv DISPLAY)
-            docker run -itd -u $(id -u):$(id -g) \
+            docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
+            if [ $(echo $?) == 0 ]; then
+                echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and gpu support
+                docker run -itd -u $(id -u):$(id -g) \
                 --gpus all \
                 --privileged \
                 --env="QT_X11_NO_MITSHM=1" \
@@ -78,6 +80,24 @@ while true; do
                 --name ${CONTAINER_NAME} \
                 -u docker \
                 ${IMAGE_NAME}
+            else
+                echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and no gpu support
+                docker run -itd -u $(id -u):$(id -g) \
+                --privileged \
+                --env="QT_X11_NO_MITSHM=1" \
+                --env="DISPLAY=${IP}${DISPLAY}" \
+                --volume="/dev:/dev:rw" \
+                --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+                --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
+                --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
+                --volume="/etc/localtime:/etc/localtime:ro" \
+                --hostname ${CONTAINER_NAME} \
+                --add-host ${CONTAINER_NAME}:127.0.1.1 \
+                -p 8080:8080 \
+                --name ${CONTAINER_NAME} \
+                -u docker \
+                ${IMAGE_NAME}
+            fi
             docker exec -it ${CONTAINER_NAME} bash
         fi
         break

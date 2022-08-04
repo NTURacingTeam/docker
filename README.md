@@ -70,6 +70,8 @@ This command run a stopped container.
 
 This command attach to the shell of a container, if the container is not running, the script will run it first.
 
+> Note: If you want to exit container's shell, simply use `exit` command.
+
 #### stop
 
 This stop a running container.
@@ -241,6 +243,10 @@ source ~/ws/devel/setup.bash
 ```
 
 has already being included in `~/.bashrc` file, so there is no need to source them everytime.
+
+### Support for using nvidia gpu in docker
+
+The script `start_container.sh` support for using gpu inside docker container when creating container, and will automatically create containers if your docker have nvidia docker support. See how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
 
 ## Known Issues
 

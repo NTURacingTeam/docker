@@ -111,19 +111,6 @@ RUN wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-li
     && tar -xvf mujoco210-linux-x86_64.tar.gz && rm mujoco210-linux-x86_64.tar.gz \ 
     && mkdir -p .mujoco/mujoco210 && mv mujoco210 .mujoco/
 
-# copy .bashrc for executing it everytime attaching to the container and modify it to
-# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin -> mujoco environment variable
-# export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so -> mujoco environment variable
-# export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
-# source /home/docker/ws/devel/setup.bash -> source ros workspace "ws"
-# source /opt/ros/noetic/setup.bash -> source ros 
-RUN cp /etc/skel/.bashrc /home/docker \
-    && echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin' >> ~/.bashrc \
-    && echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc \
-    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
-    && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc \
-    && echo 'source ~/ws/devel/setup.bash' >> ~/.bashrc
-
 # install python libraries in non-root to prevent permission problems
 # envpool -> simulating envrionment manager (but faster than opanAI-gym)
 # gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
@@ -133,3 +120,16 @@ RUN pip3 install envpool \
     gym[mujoco] \
     mujoco-py \
     torch torchvision torchaudio
+
+# copy .bashrc for executing it everytime attaching to the container and modify it to
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin -> mujoco environment variable
+# export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so -> mujoco environment variable
+# export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
+# source /opt/ros/noetic/setup.bash -> source ros
+# source ～/ws/devel/setup.bash -> source ros workspace "ws"
+RUN cp /etc/skel/.bashrc /home/docker \
+    && echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin' >> ~/.bashrc \
+    && echo 'export LD_PRELOAD=$LD_PRELOAD:/usr/lib/x86_64-linux-gnu/libGLEW.so' >> ~/.bashrc \
+    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+    && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc \
+    && echo 'source ~/ws/devel/setup.bash' >> ~/.bashrc

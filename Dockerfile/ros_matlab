@@ -81,7 +81,9 @@ RUN wget https://www.mathworks.com/mpm/glnxa64/mpm \
     && chmod +x mpm \
     && ./mpm install --release=R2022a --doc --products MATLAB ROS_Toolbox Simulink Simscape \
     && rm -f mpm /tmp/mathworks_root.log \
-    && ln -s /usr/share/matlab/bin/matlab /usr/local/bin/matlab
+    && ln -s /usr/share/matlab/bin/matlab /usr/local/bin/matlab \
+    && mkdir -p /usr/share/matlab/licenses \
+    && chmod 777 /usr/share/matlab/licenses
 
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'
@@ -101,8 +103,8 @@ RUN rosdep update \
 
 # copy .bashrc for executing it everytime attaching to the container and modify it to
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
-# source /home/docker/ws/devel/setup.bash -> source ros workspace "ws"
-# source /opt/ros/noetic/setup.bash -> source ros 
+# source /opt/ros/noetic/setup.bash -> source ros
+# source ~/ws/devel/setup.bash -> source ros workspace "ws"
 RUN cp /etc/skel/.bashrc /home/docker \
     && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
     && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc \
