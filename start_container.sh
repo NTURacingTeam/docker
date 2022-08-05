@@ -57,6 +57,10 @@ while true; do
             done
 
             # create and attach to the container
+            # create directory if the directory dosen't exist yet
+            if ! [[ -d packages/${CONTAINER_NAME} ]]; then
+                mkdir -p packages/${CONTAINER_NAME}
+            fi
             # get ip address
             IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
             # get display environment variable

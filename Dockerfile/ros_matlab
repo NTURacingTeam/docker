@@ -80,7 +80,13 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
 # using older version of mmatlab in presentation of too old glibc version of ubuntu20.04
 RUN wget https://www.mathworks.com/mpm/glnxa64/mpm \
     && chmod +x mpm \
-    && ./mpm install --release=R2021a --doc --products MATLAB ROS_Toolbox Simulink Simscape Vehicle_Dynamics_Blockset \
+    && ./mpm install --release=R2021a --doc \
+    --products MATLAB \
+    ROS_Toolbox \
+    Simulink \
+    Simscape \
+    Simscape_Driveline \
+    Vehicle_Dynamics_Blockset \
     && rm -f mpm /tmp/mathworks_root.log \
     && ln -s /usr/share/matlab/bin/matlab /usr/local/bin/matlab \
     && mkdir -p /usr/share/matlab/licenses \
