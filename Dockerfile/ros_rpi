@@ -56,7 +56,9 @@ RUN TZ=Asia/Taipei \
 # python3-rosdep -> ros dependencies manager
 # python3-rosinstall -> ros installation tool
 # python3-rosinstall-generator -> ros install file generator
+# python3-serial -> accessing serial port
 # python3-wstool -> ros version control
+# python-can -> can library
 # ros-noetic-ros_base -> ros base version
 # ros-noetic-socketcan-bridge -> ros can tool
 # initialize ros python environment as root
@@ -66,11 +68,13 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     python3-rosdep \
     python3-rosinstall \
     python3-rosinstall-generator \
+    python3-serial \
     python3-wstool \
-    ros-noetic-ros_base \
+    ros-noetic-ros-base \
     ros-noetic-socketcan-bridge \
     && apt-get clean && apt-get autoremove \
-    && rosdep init
+    && rosdep init \
+    && pip install python-can
 
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'

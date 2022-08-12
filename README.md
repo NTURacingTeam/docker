@@ -133,7 +133,10 @@ And python packages:
 - envpool -> simulating envrionment manager (but faster than opanAI-gym)
 - gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
 - mujoco-py -> bindings for mujoco that's required for opneAI-gym
+- pygame -> simulation environment for openAI gym
 - pythorch -> machine learing engine
+- tqdm -> progress bar
+- visdom -> visualization tool for pytorch
 
 ### ros_host
 
@@ -197,9 +200,12 @@ The image is based on ubuntu 20.04 with the following applications installed:
 
 And matlab products:
 - MATLAB
+- MATLAB_Coder
 - ROS_Toolbox
 - Simulink
+- Simulink_Coder
 - Simscape
+- Vehicle_Dynamics_Blockset
 
 ### ros_rpi
 
@@ -220,7 +226,9 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - python3-rosdep -> ros dependencies manager
 - python3-rosinstall -> ros installation tool
 - python3-rosinstall-generator -> ros install file generator
+- python3-serial -> accessing serial port
 - python3-wstool -> ros version control
+- pip install python-can -> can library
 - ros-noetic-ros_base -> ros base vversion
 - ros-noetic-socketcan-bridge -> ros can tool
 - swig -> wrapper for C/C++ to connect to scripting language
@@ -228,6 +236,7 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - tzdata -> timezone
 - vim -> command line text editor
 - wget -> downloader
+- wiringpi -> gpio library for rpi
 
 ### ROS enviroment
 

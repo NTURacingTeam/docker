@@ -115,11 +115,15 @@ RUN wget https://github.com/deepmind/mujoco/releases/download/2.1.0/mujoco210-li
 # envpool -> simulating envrionment manager (but faster than opanAI-gym)
 # gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
 # mujoco-py -> bindings for mujoco that's required for opneAI-gym
-# pythorch -> machine learing engine
+# pygame -> simulation environment for openAI gym
+# torch torchvision torchaudio visdom -> machine learing engine
+# tqdm -> progress bar
 RUN pip3 install envpool \
     gym[mujoco] \
     mujoco-py \
-    torch torchvision torchaudio
+    pygame \
+    torch torchvision torchaudio visdom \
+    tqdm
 
 # copy .bashrc for executing it everytime attaching to the container and modify it to
 # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/docker/.mujoco/mujoco210/bin -> mujoco environment variable

@@ -63,44 +63,64 @@ while true; do
             fi
             # get ip address
             IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
-            # get display environment variable
-            DISPLAY=$(printenv DISPLAY)
-            docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
-            if [ $(echo $?) == 0 ]; then
-                echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and gpu support
-                docker run -itd -u $(id -u):$(id -g) \
-                --gpus all \
-                --privileged \
-                --env="QT_X11_NO_MITSHM=1" \
-                --env="DISPLAY=${IP}${DISPLAY}" \
-                --volume="/dev:/dev:rw" \
-                --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-                --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
-                --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
-                --volume="/etc/localtime:/etc/localtime:ro" \
-                --hostname ${CONTAINER_NAME} \
-                --add-host ${CONTAINER_NAME}:127.0.1.1 \
-                -p 8080:8080 \
-                --name ${CONTAINER_NAME} \
-                -u docker \
-                ${IMAGE_NAME}
-            else
+
+            # if used in rpi
+            if [ ${IMAGE_NAME} == "ros_rpi" ]; then
                 echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and no gpu support
                 docker run -itd -u $(id -u):$(id -g) \
                 --privileged \
                 --env="QT_X11_NO_MITSHM=1" \
-                --env="DISPLAY=${IP}${DISPLAY}" \
                 --volume="/dev:/dev:rw" \
                 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                 --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
                 --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
                 --volume="/etc/localtime:/etc/localtime:ro" \
-                --hostname ${CONTAINER_NAME} \
-                --add-host ${CONTAINER_NAME}:127.0.1.1 \
-                -p 8080:8080 \
+                --network host
                 --name ${CONTAINER_NAME} \
                 -u docker \
                 ${IMAGE_NAME}
+            else
+                # get display environment variable
+                DISPLAY=$(printenv DISPLAY)
+                
+                # if host has gpu support
+                docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
+                if [ $(echo $?) == 0 ]; then
+                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and gpu support
+                    docker run -itd -u $(id -u):$(id -g) \
+                    --gpus all \
+                    --privileged \
+                    --env="QT_X11_NO_MITSHM=1" \
+                    --env="DISPLAY=${IP}${DISPLAY}" \
+                    --volume="/dev:/dev:rw" \
+                    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+                    --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
+                    --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
+                    --volume="/etc/localtime:/etc/localtime:ro" \
+                    --hostname ${CONTAINER_NAME} \
+                    --add-host ${CONTAINER_NAME}:127.0.1.1 \
+                    -p 8080:8080 \
+                    --name ${CONTAINER_NAME} \
+                    -u docker \
+                    ${IMAGE_NAME}
+                else
+                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and no gpu support
+                    docker run -itd -u $(id -u):$(id -g) \
+                    --privileged \
+                    --env="QT_X11_NO_MITSHM=1" \
+                    --env="DISPLAY=${IP}${DISPLAY}" \
+                    --volume="/dev:/dev:rw" \
+                    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+                    --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
+                    --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
+                    --volume="/etc/localtime:/etc/localtime:ro" \
+                    --hostname ${CONTAINER_NAME} \
+                    --add-host ${CONTAINER_NAME}:127.0.1.1 \
+                    -p 8080:8080 \
+                    --name ${CONTAINER_NAME} \
+                    -u docker \
+                    ${IMAGE_NAME}
+                fi
             fi
             docker exec -it ${CONTAINER_NAME} bash
         fi
@@ -112,7 +132,7 @@ while true; do
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
                 echo "The following are the containers you can run:"
-                docker container list -f "status=exited" | awk '{print $NF}'
+                docker container list -f "status=exited" | sed -n '2,$p' | awk '{print $NF}'
                 read -p "What container do you want to run? " CONTAINER_NAME
             else
                 CONTAINER_NAME=$2
@@ -142,7 +162,7 @@ while true; do
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
                 echo "The following are the containers you can attach into shell:"
-                docker container list -a | awk '{print $NF}'
+                docker container list -a | sed -n '2,$p' | awk '{print $NF}'
                 read -p "What container do you want to attach into shell? " CONTAINER_NAME
             else
                 CONTAINER_NAME=$2
