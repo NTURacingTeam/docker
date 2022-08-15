@@ -205,6 +205,8 @@ And matlab products:
 - Simulink
 - Simulink_Coder
 - Simscape
+- Simscape_Driveline
+- Simescape_Electrical
 - Vehicle_Dynamics_Blockset
 
 ### ros_rpi
@@ -228,7 +230,6 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - python3-rosinstall-generator -> ros install file generator
 - python3-serial -> accessing serial port
 - python3-wstool -> ros version control
-- pip install python-can -> can library
 - ros-noetic-ros_base -> ros base vversion
 - ros-noetic-socketcan-bridge -> ros can tool
 - swig -> wrapper for C/C++ to connect to scripting language
@@ -237,6 +238,10 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - vim -> command line text editor
 - wget -> downloader
 - wiringpi -> gpio library for rpi
+
+And python packages
+- python-can -> can library
+- RPi.GPIO -> accessing rpi gpio
 
 ### ROS enviroment
 
@@ -255,7 +260,7 @@ has already being included in `~/.bashrc` file, so there is no need to source th
 
 ### Support for using nvidia gpu in docker
 
-The script `start_container.sh` support for using gpu inside docker container when creating container, and will automatically create containers if your docker have nvidia docker support. See how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
+The script `start_container.sh` support for using gpu inside docker container when creating container, and will automatically create containers if your docker have nvidia docker support. Checkout how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
 
 ## Known Issues
 

@@ -66,18 +66,18 @@ while true; do
 
             # if used in rpi
             if [ ${IMAGE_NAME} == "ros_rpi" ]; then
-                echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and no gpu support
-                docker run -itd -u $(id -u):$(id -g) \
+                echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image using rpi configuration"
+                docker run -itd \
                 --privileged \
                 --env="QT_X11_NO_MITSHM=1" \
                 --volume="/dev:/dev:rw" \
                 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-                --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
+                --volume="$(pwd)/packages/${CONTAINER_NAME}:/root/ws/src:rw" \
                 --volume="${HOME}/.Xauthority:/root/.Xauthority:rw" \
                 --volume="/etc/localtime:/etc/localtime:ro" \
-                --network host
+                --network host \
                 --name ${CONTAINER_NAME} \
-                -u docker \
+                -u root \
                 ${IMAGE_NAME}
             else
                 # get display environment variable
@@ -86,7 +86,7 @@ while true; do
                 # if host has gpu support
                 docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
                 if [ $(echo $?) == 0 ]; then
-                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and gpu support
+                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
                     --gpus all \
                     --privileged \
@@ -104,7 +104,7 @@ while true; do
                     -u docker \
                     ${IMAGE_NAME}
                 else
-                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image" and no gpu support
+                    echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and no gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
                     --privileged \
                     --env="QT_X11_NO_MITSHM=1" \

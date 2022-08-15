@@ -56,47 +56,36 @@ RUN TZ=Asia/Taipei \
 # python3-rosdep -> ros dependencies manager
 # python3-rosinstall -> ros installation tool
 # python3-rosinstall-generator -> ros install file generator
-# python3-serial -> accessing serial port
 # python3-wstool -> ros version control
-# python-can -> can library
 # ros-noetic-ros_base -> ros base version
 # ros-noetic-socketcan-bridge -> ros can tool
-# initialize ros python environment as root
+# initialize and update ros python environment as root
 RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
     && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
     && apt-get update && apt-get install -y \
     python3-rosdep \
     python3-rosinstall \
     python3-rosinstall-generator \
-    python3-serial \
     python3-wstool \
     ros-noetic-ros-base \
     ros-noetic-socketcan-bridge \
     && apt-get clean && apt-get autoremove \
     && rosdep init \
-    && pip install python-can
+    && rosdep update
 
-# adding user "docker" on host
-# password "docker" for user 'root' and 'docker'
-RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo docker \
-    && echo 'docker\ndocker' | passwd \
-    && echo 'docker\ndocker' | passwd docker
+# install python library
+# python-can -> can library
+# RPi.GPIO -> accessing rpi gpio
+RUN pip install python-can \
+    RPi.GPIO
 
-# change to user "docker" and change to home directory
-USER docker
-WORKDIR /home/docker
+# switch to root home directory
+WORKDIR /root
 
-# update python enviroment in non-user directory
+# prepare ro environment
 # prebuild ws once, using bash warpper for avoiding wierd problems
-RUN rosdep update \
-    && bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
-
-# copy .bashrc for executing it everytime attaching to the container and modify it to
-# export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
 # source /opt/ros/noetic/setup.bash -> source ros
 # source ~/ws/devel/setup.bash -> source ros workspace "ws"
-RUN cp /etc/skel/.bashrc /home/docker \
-    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+RUN bash -c 'source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make' \
     && echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc \
     && echo 'source ~/ws/devel/setup.bash' >> ~/.bashrc

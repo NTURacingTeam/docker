@@ -90,6 +90,7 @@ RUN wget https://www.mathworks.com/mpm/glnxa64/mpm \
     Simulink_Coder \
     Simscape \
     Simscape_Driveline \
+    Simscape_Electrical \
     Vehicle_Dynamics_Blockset \
     && rm -f mpm /tmp/mathworks_root.log \
     && ln -s /usr/share/matlab/bin/matlab /usr/local/bin/matlab \
@@ -110,7 +111,7 @@ WORKDIR /home/docker
 # update python enviroment in non-user directory
 # prebuild ws once, using bash warpper for avoiding wierd problems
 RUN rosdep update \
-    && bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
+    && bash -c 'source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make'
 
 # copy .bashrc for executing it everytime attaching to the container and modify it to
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable

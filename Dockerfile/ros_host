@@ -90,7 +90,7 @@ WORKDIR /home/docker
 # update python enviroment in non-user directory
 # prebuild ws once, using bash warpper for avoiding wierd problems
 RUN rosdep update \
-    && bash -c "source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make"
+    && bash -c 'source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make'
 
 # copy .bashrc for executing it everytime attaching to the container and modify it to
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable

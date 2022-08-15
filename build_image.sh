@@ -19,7 +19,7 @@ if [[ -z $(ls Dockerfile) ]]; then
     echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No image availible in directory 'Dockerfile'${COLOR_REST}"
 elif [[ -z $1 ]]; then
     echo "The following are the docker images in directory 'Dockerfile' that you can build your image from:"
-    ls Dockerfile
+    ls -l Dockerfile | sed -n '2,$p' | awk '{print $NF}'
     read -p "Which image do you want to build? " IMAGE_FILE
 else
     IMAGE_FILE=$1
