@@ -87,6 +87,15 @@ The script also support bash arguments as a short hand
 
 where `COMMAND` is the command listed above, `CONTAINER_NAME` is the container you want to manage, and `IMAGE_NAME` is for building container with specific image name.
 
+#### Specific changes for deploying to rpi
+
+When creating a container from `ros_rpi` image, there will be some sepcific changes:
+
+1. The network of the container and the host are not separated
+2. The default user of the container is root
+
+In another word, creating and using this container is as if you are always root on the host, which is very dangerious, so please be careful!
+
 ## Image environment
 
 The following is the description of the image environments.

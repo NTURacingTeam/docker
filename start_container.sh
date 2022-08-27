@@ -85,7 +85,7 @@ while true; do
                 
                 # if host has gpu support
                 docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
-                if [ $(echo $?) == 0 ]; then
+                if [ $? == 0 ]; then
                     echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
                     --gpus all \

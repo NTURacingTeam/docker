@@ -25,6 +25,7 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # tzdata -> timezone
 # vim -> command line text editor
 # wget -> downloader
+# wiringpi -> cpp package for controlling gpio
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
@@ -44,6 +45,7 @@ RUN apt-get update && \
     tzdata \
     vim \
     wget \
+    wiringpi \
     && apt-get clean && apt-get autoremove
 
 # configure timezone to taipei
