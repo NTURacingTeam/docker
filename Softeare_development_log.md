@@ -37,6 +37,9 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 ##### Compiler(intepreter) version:
 - N/A
 
+## Change date of 2.7:
+2022/8/27
+
 ## Changes in 2.7:
 - Make creating a container from `ros_rpi` image to have
   - A not separated network with the host
@@ -47,9 +50,6 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 - In order to hve the same functionality as on the host
 - Packages that will be used for can
 
-## Change date of 2.7:
-2022/8/27
-
 ## Testing result of 2.7:
 ### Launch ros on rpi
 All functionality are as aspected as running on the host
@@ -57,6 +57,9 @@ All functionality are as aspected as running on the host
 ## Todos in 2.7:
 
 ---
+## Change date of 2.6:
+2022/8/15
+
 ## Changes in 2.6
 - Add matlab product: Simescape Electrical to ros_matlab
 - Changed the default user for ros_rpi image sto root
@@ -64,9 +67,6 @@ All functionality are as aspected as running on the host
 ## Change reasons of 2.6:
 - Using Simescape Electrical for motor model
 - To avoid wierd permission problem when accessing /dev
-
-## Change date of 2.6:
-2022/8/15
 
 ## Testing result of 2.6:
 ### Launch ros from host by
@@ -78,6 +78,9 @@ ros launched successfully
 ## Todos in 2.6:
 
 ---
+## Change date of 2.5:
+2022/8/12
+
 ## Changes in 2.5:
 - Minor bug fix
   - fix image build and container access to can hat problem on rpi 
@@ -87,9 +90,6 @@ ros launched successfully
 
 ## Change reasons of 2.5:
 - Some problem when using can hat on docker
-
-## Change date of 2.5:
-2022/8/12
 
 ## Testing result of 2.5:
 ### Building `ros_rpi` on rpi
@@ -101,6 +101,9 @@ Can hat worked successfully
 ## Todos in 2.5:
 
 ---
+## Change date of 2.4:
+2022/8/5
+
 ## Changes in 2.4:
 - Minor bug fix
   - mkdir the package directory for the container before creating a container
@@ -110,9 +113,6 @@ Can hat worked successfully
 - if docker bind-mount without the directory alreadly exist, the directory wiil be created under root permission
 - Using imscape_Driveline for vehicle dynamics
 
-## Change date of 2.4:
-2022/8/5
-
 ## Testing result of 2.4:
 ### Creating a continer without the package directory exist
 created successfully without permission problem
@@ -121,6 +121,9 @@ created successfully without permission problem
 - Not tested on raspberry pi yet
 
 ---
+## Change date of 2.3:
+2022/8/4
+
 ## Changes in 2.3:
 - Minor bug fix
   - Using older version of matlab in prevention of glibc version problem
@@ -130,9 +133,6 @@ created successfully without permission problem
 - Crash when activating simulink as a result of too old version of glibc of ubuntu20.04
 - Using Vehicle_Dynamics_Blockset for vehicle dynamics
 
-## Change date of 2.3:
-2022/8/4
-
 ## Testing result of 2.3:
 ### Activating simulink
 successfully
@@ -141,6 +141,9 @@ successfully
 - Not tested on raspberry pi yet
 
 ---
+## Change date of 2.2:
+2022/8/4
+
 ## Changes in 2.2:
 - Minor bug fix
   - Give /usr/share/matlab/licenses permission for everone as matlab is installed in root user
@@ -149,9 +152,6 @@ successfully
 ## Change reasons of 2.2:
 - Matlab have to have permission to /usr/share/matlab/licenses in order to activate
 - The script was original only usable for hosts with nvidia docker support
-
-## Change date of 2.2:
-2022/8/4
 
 ## Testing result of 2.2:
 ### ros_matlab
@@ -175,6 +175,9 @@ created successfully
 - Not tested on raspberry pi yet
 
 ---
+## Change date of 2.1:
+2022/8/4
+
 ## Changes in 2.1:
 - Minor bug fix
   - Reverse the order of sourcing ros and ros workspace in .bashrc
@@ -182,9 +185,6 @@ created successfully
 
 ## Change reasons of 2.1:
 - Sourcing ros workapsce before sourcing ros have no effect
-
-## Change date of 2.1:
-2022/8/4
 
 ## Testing result of 2.1:
 ### ros_matlab
@@ -198,6 +198,9 @@ Auto-sourcing ~/ws/devel/setup.bash Successfully
 - Not tested on raspberry pi yet
 
 ---
+## Change date of 2.0:
+2022/7/30
+
 ## Changes in 2.0:
 - Added three other dockerfiles for different needs, including
   - ros_host: image with ros for desktop use
@@ -208,9 +211,6 @@ Auto-sourcing ~/ws/devel/setup.bash Successfully
 ## Change reasons of 2.0:
 - Add other images for different needs, especially ros_matlab for future developments
 - Rewrite dockerfiles for better performances, please checkout [Better practice for writting dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
-
-## Change date of 2.0:
-2022/7/30
 
 ## Testing result of 2.0:
 ### Test building image
@@ -226,9 +226,6 @@ Built successfully
 - Not tested on raspberry pi yet
 
 ---
-## Change date of 1.0:
-2022/7/28
-
 ## Testing result of 1.0:
 ### Test building image
 runing
