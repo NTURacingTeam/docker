@@ -1,4 +1,10 @@
-# Readme for Docker Environment
+# Docker Virtual Environment
+
+## Introduction
+
+Virtual environment are commanly used in order to avoid unnecessary environment setups as a result of different computers with different software installed. Here docker is adoped as a comprehensive virtual environment that is applicable for every software.
+
+We provide custom images for using ros, matlab, etc. on desktop computers or rpi, and handy bash scripts to control these virtual environment.
 
 ## Before you start
 
