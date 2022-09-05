@@ -45,6 +45,28 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 - N/A
 
 ---
+
+## Change date of 2.8: 2022/9/5
+
+## Changes in 2.8:
+
+- Add DSP_System_Toolbox and Signal_Processing_Toolbox to matlab
+- Add new image `ros2_host`
+
+## Change reasons of 2.8:
+
+- In order to split a matrix into vectors
+- In order to test ros2 functionality
+
+## Testing result of 2.8:
+
+### ros2_host
+
+Built successfully
+
+## Todos in 2.8:
+
+---
 ## Change date of 2.7: 2022/8/27
 
 ## Changes in 2.7:

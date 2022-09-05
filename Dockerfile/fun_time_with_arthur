@@ -93,7 +93,7 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'
 RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo docker \
+    && usermod -aG sudo,dialout docker \
     && echo 'docker\ndocker' | passwd \
     && echo 'docker\ndocker' | passwd docker
 

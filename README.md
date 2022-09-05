@@ -214,9 +214,12 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - wget -> downloader
 
 And matlab products:
+
+- DSP_System_Toolbox
 - MATLAB
 - MATLAB_Coder
 - ROS_Toolbox
+- Signal_Processing_Toolbox
 - Simulink
 - Simulink_Coder
 - Simscape
@@ -239,6 +242,7 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - keyboard-configuration -> keyboard configuration
 - lsb-release -> linux standard base
 - net-tools -> network configurator
+- python3-can -> can library
 - python3-pip -> python package manager
 - python3-rosdep -> ros dependencies manager
 - python3-rosinstall -> ros installation tool
@@ -255,8 +259,36 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - wiringpi -> gpio library for rpi
 
 And python packages
-- python-can -> can library
+
 - RPi.GPIO -> accessing rpi gpio
+
+### ros2_host
+
+The image is based on ubuntu 22.04 with the following applications installed:
+
+- bash-completion -> bash auto-complete
+- build-essential -> compiler
+- byobu -> terminal multiplexer
+- ca-certificates -> certificate manager
+- curl -> internet commuincation library
+- feh -> image viewer
+- git -> version control
+- gnupg2 -> encryption
+- keyboard-configuration -> keyboard configuration
+- locales -> configure locale
+- lsb-release -> linux standard base
+- net-tools -> network configurator
+- python3-pip -> python package manager
+- python3-rosdep -> ros2 dependencies manager
+- ros-humble-desktop-full -> ros2
+- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
+- ros-humble-plotjuggler -> ros2 plotting tool
+- ros-humble-ros2-socketcan -> ros2 can tool
+- swig -> wrapper for C/C++ to connect to scripting language
+- tmux -> terminal multiplexer
+- tzdata -> timezone
+- vim -> command line text editor
+- wget -> downloader
 
 ### ROS enviroment
 
@@ -264,11 +296,24 @@ There will be ros workspace directory preconfigured in `/home/docker/ws` and its
 
 The workspace `~/ws` has already been build(catkin_make) once, so there will also be `build` and `devel` directory beside the `src`.
 
+### ROS1
+
 The general ros environment setup
 
 ```bash=
 source /opt/ros/noetic/setup.bash
 source ~/ws/devel/setup.bash
+```
+
+has already being included in `~/.bashrc` file, so there is no need to source them everytime.
+
+### ROS2
+
+The general ros2 environment setup
+
+```bash=
+source /opt/ros/humble/setup.bash
+source ~/ws/install/setup.bash
 ```
 
 has already being included in `~/.bashrc` file, so there is no need to source them everytime.
