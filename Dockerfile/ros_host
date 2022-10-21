@@ -16,6 +16,8 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # feh -> image viewer
 # git -> version control
 # gnupg2 -> encryption
+# gpsd -> gps daemon
+# gpsd-clients -> gps client
 # keyboard-configuration -> keyboard configuration
 # lsb-release -> linux standard base
 # net-tools -> network configurator
@@ -35,6 +37,8 @@ RUN apt-get update && \
     feh \
     git \
     gnupg2 \
+    gpsd \
+    gpsd-clients \
     keyboard-configuration \
     lsb-release \
     net-tools \
@@ -58,6 +62,8 @@ RUN TZ=Asia/Taipei \
 # python3-rosinstall-generator -> ros install file generator
 # python3-wstool -> ros version control
 # ros-noetic-desktop-full -> ros
+# ros-noetic-gps-common -> for using gps with ros
+# ros-noetic-gps-client -> for using gps with ros
 # ros-noetic-teleop-twist-keyboard -> ros keyboard control
 # ros-noetic-rqt-multiplot -> ros multi-plotting tool
 # ros-noetic-socketcan-bridge -> ros can tool
@@ -70,6 +76,8 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     python3-rosinstall-generator \
     python3-wstool \
     ros-noetic-desktop-full \
+    ros-noetic-gps-common \
+    ros-noetic-gps-client \
     ros-noetic-teleop-twist-keyboard \
     ros-noetic-rqt-multiplot \
     ros-noetic-socketcan-bridge \
@@ -79,7 +87,7 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'
 RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo docker \
+    && usermod -aG sudo,dialout docker \
     && echo 'docker\ndocker' | passwd \
     && echo 'docker\ndocker' | passwd docker
 
@@ -87,7 +95,11 @@ RUN useradd --create-home --shell /bin/bash docker \
 USER docker
 WORKDIR /home/docker
 
-# update python enviroment in non-user directory
+# install python library
+# gps3 -> gps library
+RUN pip install gps3
+
+# update ros dependencies in non-user directory
 # prebuild ws once, using bash warpper for avoiding wierd problems
 RUN rosdep update \
     && bash -c 'source /opt/ros/noetic/setup.bash && mkdir -p ws/src && cd ws && catkin_make'

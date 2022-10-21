@@ -16,7 +16,10 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # feh -> image viewer
 # git -> version control
 # gnupg2 -> encryption
+# gpsd -> gps daemon
+# gpsd-clients -> gps client
 # keyboard-configuration -> keyboard configuration
+# libyaml-cpp-dev -> using yaml in cpp
 # lsb-release -> linux standard base
 # net-tools -> network configurator
 # python3-pip -> python package manager
@@ -36,7 +39,10 @@ RUN apt-get update && \
     feh \
     git \
     gnupg2 \
+    gpsd \
+    gpsd-clients \
     keyboard-configuration \
+    libyaml-cpp-dev \
     lsb-release \
     net-tools \
     python3-pip \
@@ -59,9 +65,11 @@ RUN TZ=Asia/Taipei \
 # python3-rosinstall -> ros installation tool
 # python3-rosinstall-generator -> ros install file generator
 # python3-wstool -> ros version control
+# ros-noetic-gps-common -> for using gps with ros
+# ros-noetic-gps-client -> for using gps with ros
 # ros-noetic-ros_base -> ros base version
 # ros-noetic-socketcan-bridge -> ros can tool
-# initialize and update ros python environment as root
+# initialize and update ros dependencies as root
 RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
     && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
     && apt-get update && apt-get install -y \
@@ -69,6 +77,8 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     python3-rosinstall \
     python3-rosinstall-generator \
     python3-wstool \
+    ros-noetic-gps-common \
+    ros-noetic-gps-client \
     ros-noetic-ros-base \
     ros-noetic-socketcan-bridge \
     && apt-get clean && apt-get autoremove \
@@ -76,9 +86,9 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     && rosdep update
 
 # install python library
-# python-can -> can library
+# gps3 -> gps library
 # RPi.GPIO -> accessing rpi gpio
-RUN pip install python-can \
+RUN pip install gps3 \
     RPi.GPIO
 
 # switch to root home directory

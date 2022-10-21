@@ -9,7 +9,7 @@
 ##### Repository: [github](https://github.com/NTURacingTeam/docker)
 ##### Started designing date: 2022/7/28
 ##### Current version: 2.7
-##### Last modified date: 2022/8/27
+##### Last modified date: 2022/10/21
 ---
 ## Engineering goal:
 
@@ -43,6 +43,42 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 ##### Compiler(intepreter) version:
 
 - N/A
+
+---
+
+## Change date of 2.9: 
+
+## Changes in 2.9:
+
+- Change the base image `fun_time_with_arthur` into a nvidia/cuda:11.7.0-base-ubuntu22.04
+- Swap ros1 in `fun_time_with_arthur` to ros2
+- Add gpd, gpsd-clients, ros-noetic-gps-common, ros-noetic-gps-client and python package gps3 to `ros_rpi`, `ros_host`, `ros_matlab`
+- Add matlab product `Control_System_Toolbox` to `ros_matlab`
+- Add matlab product `Symbolic_Math_Toolbox` to `ros_matlab`
+- Removed matlab product `DSP_System_Toolbox`, `Signal_Processing_Toolbox` from `ros_matlab`
+- Add `ros-humble-gazebo-ros-pkgs` to `fun_time_with_arthur` and `ros2_host`
+- Add `libyaml-cpp-dev` to `ros_rpi`
+- Add `ros-humble-ros2-controller` to `fun_time_with_arthur`
+
+## Change reasons of 2.9:
+
+- In order to use ros2 in `fun_time_with_arthur`
+- In order to use ros2 in `fun_time_with_arthur`
+- In order to use gps
+- In order to use transfer fuction
+- In order to solve differential equations
+- The product is no longer necessary
+- In order to use gazebo with ros2
+- In order to use yaml in cpp
+- Inn order to use ros2 controllers
+
+## Testing result of 2.9:
+
+### Libraries compatibility
+
+Most of them work great, some of them need some twicks but overall fine.
+
+## Todos in 2.9:
 
 ---
 

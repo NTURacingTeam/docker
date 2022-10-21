@@ -56,7 +56,7 @@ RUN TZ=Asia/Taipei \
     && ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone \
     && dpkg-reconfigure -f noninteractive tzdata \
-    && sudo locale-gen en_US en_US.UTF-8 \
+    && locale-gen en_US en_US.UTF-8 \
     && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
     && export LANG=en_US.UTF-8
 
@@ -64,16 +64,18 @@ RUN TZ=Asia/Taipei \
 # python3-colcon-common-extensions -> build ros2 workspace
 # python3-rosdep -> ros dependencies manager
 # ros-humble-desktop-full -> ros2
+# ros-humble-gazebo-ros-pkgs -> gazebo
 # ros-humble-plotjuggler -> ros2 plotting tool
 # ros-humble-ros2-socketcan -> ros2 can driver
 # ros-humble-teleop-twist-keyboard -> ros2 keyboard control
-# initialize ros python environment as root
+# initialize ros dependencies as root
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu jammy main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null \
-    && sudo apt update && apt-get install -y \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
+    && apt update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-rosdep \
     ros-humble-desktop-full \
+    ros-humble-gazebo-ros-pkgs \
     ros-humble-plotjuggler \
     ros-humble-ros2-socketcan \
     ros-humble-teleop-twist-keyboard \
@@ -83,7 +85,7 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'
 RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo docker \
+    && usermod -aG sudo,dialout docker \
     && echo 'docker\ndocker' | passwd \
     && echo 'docker\ndocker' | passwd docker
 
@@ -91,7 +93,7 @@ RUN useradd --create-home --shell /bin/bash docker \
 USER docker
 WORKDIR /home/docker
 
-# update python enviroment in non-user directory
+# update ros dependencies in non-user directory
 # prebuild ws once, using bash warpper for avoiding wierd problems
 RUN rosdep update \
     && bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'

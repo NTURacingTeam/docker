@@ -108,7 +108,7 @@ The following is the description of the image environments.
 
 ### fun_time_with_arthur
 
-The image is based on 11.7.0-base-ubuntu20.04, which is an ubuntu 20.04 image with Nvida cuda support and has the following applications installed:
+The image is based on 11.7.0-base-ubuntu22.04, which is an ubuntu 20.04 image with Nvida cuda support and has the following applications installed:
 
 - bash-completion -> bash auto-complete
 - build-essential -> compiler
@@ -119,6 +119,7 @@ The image is based on 11.7.0-base-ubuntu20.04, which is an ubuntu 20.04 image wi
 - git -> version control
 - gnupg2 -> encryption
 - keyboard-configuration -> keyboard configuration
+- locales -> configure locale
 - libgl1-mesa-dev -> mujoco-py dependancy
 - libgl1-mesa-glx -> mujoco-py dependancy
 - libglew-dev -> mujoco-py dependancy
@@ -128,15 +129,16 @@ The image is based on 11.7.0-base-ubuntu20.04, which is an ubuntu 20.04 image wi
 - net-tools -> network configurator
 - nvidia-cuda-toolkit -> for using gpu
 - patchelf -> mujoco-py dependancy
+- python3-colcon-common-extensions -> build ros2 workspace
 - python3-pip -> python package manager
 - python3-rosdep -> ros dependencies manager
-- python3-rosinstall -> ros installation tool
-- python3-rosinstall-generator -> ros install file generator
-- python3-wstool -> ros version control
-- ros-noetic-desktop-full -> ros
-- ros-noetic-teleop-twist-keyboard -> ros keyboard control
-- ros-noetic-rqt-multiplot -> ros multi-plotting tool
-- ros-noetic-socketcan-bridge -> ros can tool
+- ros-humble-desktop-full -> ros2
+- ros-humble-gazebo-ros-pkgs -> gazebo
+- ros-humble-plotjuggler -> ros2 plotting tool
+- ros-humble-ros2-cpntroller -> ros2 controllers
+- ros-humble-ros2-socketcan -> ros2 can driver
+- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
+- sudo -> executing commands as root
 - swig -> wrapper for C/C++ to connect to scripting language
 - tmux -> terminal multiplexer
 - tzdata -> timezone
@@ -153,6 +155,11 @@ And python packages:
 - tqdm -> progress bar
 - visdom -> visualization tool for pytorch
 
+And other applications that are not installed traditionally
+
+- mujoco -> simulating environment
+- micro_ros_setup -> micro ros support
+
 ### ros_host
 
 The image is based on ubuntu 20.04 with the following applications installed:
@@ -165,6 +172,8 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - feh -> image viewer
 - git -> version control
 - gnupg2 -> encryption
+- gpsd -> gps daemon
+- gpsd-clients -> gps client
 - keyboard-configuration -> keyboard configuration
 - lsb-release -> linux standard base
 - net-tools -> network configurator
@@ -182,6 +191,8 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - tzdata -> timezone
 - vim -> command line text editor
 - wget -> downloader
+
+
 
 ### ros_matlab
 
@@ -195,6 +206,8 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - feh -> image viewer
 - git -> version control
 - gnupg2 -> encryption
+- gpsd -> gps daemon
+- gpsd-clients -> gps client
 - keyboard-configuration -> keyboard configuration
 - lsb-release -> linux standard base
 - net-tools -> network configurator
@@ -213,18 +226,22 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - vim -> command line text editor
 - wget -> downloader
 
+And python packages
+
+- gps3 -> gps library
+
 And matlab products:
 
-- DSP_System_Toolbox
+- Control_System_Toolbox
 - MATLAB
 - MATLAB_Coder
 - ROS_Toolbox
-- Signal_Processing_Toolbox
 - Simulink
 - Simulink_Coder
 - Simscape
 - Simscape_Driveline
 - Simescape_Electrical
+- Symbolic_Math_Toolbox
 - Vehicle_Dynamics_Blockset
 
 ### ros_rpi
@@ -239,7 +256,10 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - feh -> image viewer
 - git -> version control
 - gnupg2 -> encryption
+- gpsd -> gps daemon
+- gpsd-clients -> gps client
 - keyboard-configuration -> keyboard configuration
+- libyaml-cpp-dev -> using yaml in cpp
 - lsb-release -> linux standard base
 - net-tools -> network configurator
 - python3-can -> can library
@@ -260,6 +280,7 @@ The image is based on ubuntu 20.04 with the following applications installed:
 
 And python packages
 
+- gps3 -> gps library
 - RPi.GPIO -> accessing rpi gpio
 
 ### ros2_host
@@ -281,6 +302,7 @@ The image is based on ubuntu 22.04 with the following applications installed:
 - python3-pip -> python package manager
 - python3-rosdep -> ros2 dependencies manager
 - ros-humble-desktop-full -> ros2
+- ros-humble-gazebo-ros-pkgs -> gazebo
 - ros-humble-teleop-twist-keyboard -> ros2 keyboard control
 - ros-humble-plotjuggler -> ros2 plotting tool
 - ros-humble-ros2-socketcan -> ros2 can tool
