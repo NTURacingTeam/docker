@@ -65,7 +65,7 @@ RUN TZ=Asia/Taipei \
 # python3-wstool -> ros version control
 # ros-noetic-desktop-full -> ros
 # ros-noetic-gps-common -> for using gps with ros
-# ros-noetic-gps-client -> for using gps with ros
+# ros-noetic-gpsd-client -> for using gps with ros
 # ros-noetic-teleop-twist-keyboard -> ros keyboard control
 # ros-noetic-rqt-multiplot -> ros multi-plotting tool
 # ros-noetic-socketcan-bridge -> ros can tool
@@ -79,7 +79,7 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     python3-wstool \
     ros-noetic-desktop-full \
     ros-noetic-gps-common \
-    ros-noetic-gps-client \
+    ros-noetic-gpsd-client \
     ros-noetic-teleop-twist-keyboard \
     ros-noetic-rqt-multiplot \
     ros-noetic-socketcan-bridge \

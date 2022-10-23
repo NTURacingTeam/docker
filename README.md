@@ -183,6 +183,8 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - python3-rosinstall-generator -> ros install file generator
 - python3-wstool -> ros version control
 - ros-noetic-desktop-full -> ros
+- ros-noetic-gps-common -> for using gps with ros
+- ros-noetic-gpsd-client -> for using gps with ros
 - ros-noetic-teleop-twist-keyboard -> ros keyboard control
 - ros-noetic-rqt-multiplot -> ros multi-plotting tool
 - ros-noetic-socketcan-bridge -> ros can tool
@@ -217,6 +219,8 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - python3-rosinstall-generator -> ros install file generator
 - python3-wstool -> ros version control
 - ros-noetic-desktop-full -> ros
+- ros-noetic-gps-common -> for using gps with ros
+- ros-noetic-gpsd-client -> for using gps with ros
 - ros-noetic-teleop-twist-keyboard -> ros keyboard control
 - ros-noetic-rqt-multiplot -> ros multi-plotting tool
 - ros-noetic-socketcan-bridge -> ros can tool
@@ -269,7 +273,9 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - python3-rosinstall-generator -> ros install file generator
 - python3-serial -> accessing serial port
 - python3-wstool -> ros version control
-- ros-noetic-ros_base -> ros base vversion
+- ros-noetic-ros_base -> ros base version
+- ros-noetic-gps-common -> for using gps with ros
+- ros-noetic-gpsd-client -> for using gps with ros
 - ros-noetic-socketcan-bridge -> ros can tool
 - swig -> wrapper for C/C++ to connect to scripting language
 - tmux -> terminal multiplexer

@@ -52,7 +52,7 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 
 - Change the base image `fun_time_with_arthur` into a nvidia/cuda:11.7.0-base-ubuntu22.04
 - Swap ros1 in `fun_time_with_arthur` to ros2
-- Add gpd, gpsd-clients, ros-noetic-gps-common, ros-noetic-gps-client and python package gps3 to `ros_rpi`, `ros_host`, `ros_matlab`
+- Add gpd, gpsd-clients, ros-noetic-gps-common, ros-noetic-gpsd-client and python package gps3 to `ros_rpi`, `ros_host`, `ros_matlab`
 - Add matlab product `Control_System_Toolbox` to `ros_matlab`
 - Add matlab product `Symbolic_Math_Toolbox` to `ros_matlab`
 - Removed matlab product `DSP_System_Toolbox`, `Signal_Processing_Toolbox` from `ros_matlab`
