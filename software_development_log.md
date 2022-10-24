@@ -46,7 +46,17 @@ The software also provides custom dockerfile in `Dockerfile` to build custom ima
 
 ---
 
-## Change date of 2.9: 
+## Change date of 2.10: 
+
+## Changes in 2.10:
+
+- Install `wiringPi` using github repository instead of apt in images `ros_matlab`, `ros_host`, `ros_rpi`.
+
+## Change reasons of 2.10:
+
+- To prevent wierd problems.
+
+## Change date of 2.9: 2022/10/22
 
 ## Changes in 2.9:
 

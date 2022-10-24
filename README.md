@@ -155,7 +155,7 @@ And python packages:
 - tqdm -> progress bar
 - visdom -> visualization tool for pytorch
 
-And other applications that are not installed traditionally
+And other packages that are not installed traditionally
 
 - mujoco -> simulating environment
 - micro_ros_setup -> micro ros support
@@ -194,7 +194,14 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - vim -> command line text editor
 - wget -> downloader
 
+And python packages
 
+- gps3 -> gps library
+- RPi.GPIO -> accessing rpi gpio
+
+And other packages that are not installed traditionally
+
+- wiringpi -> gpio library for rpi
 
 ### ros_matlab
 
@@ -233,6 +240,7 @@ The image is based on ubuntu 20.04 with the following applications installed:
 And python packages
 
 - gps3 -> gps library
+- RPi.GPIO -> accessing rpi gpio
 
 And matlab products:
 
@@ -247,6 +255,10 @@ And matlab products:
 - Simescape_Electrical
 - Symbolic_Math_Toolbox
 - Vehicle_Dynamics_Blockset
+
+And other packages that are not installed traditionally
+
+- wiringpi -> gpio library for rpi
 
 ### ros_rpi
 
@@ -282,12 +294,15 @@ The image is based on ubuntu 20.04 with the following applications installed:
 - tzdata -> timezone
 - vim -> command line text editor
 - wget -> downloader
-- wiringpi -> gpio library for rpi
 
 And python packages
 
 - gps3 -> gps library
 - RPi.GPIO -> accessing rpi gpio
+
+And other packages that are not installed traditionally
+
+- wiringpi -> gpio library for rpi
 
 ### ros2_host
 

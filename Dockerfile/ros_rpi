@@ -28,7 +28,6 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # tzdata -> timezone
 # vim -> command line text editor
 # wget -> downloader
-# wiringpi -> cpp package for controlling gpio
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
@@ -51,7 +50,6 @@ RUN apt-get update && \
     tzdata \
     vim \
     wget \
-    wiringpi \
     && apt-get clean && apt-get autoremove
 
 # configure timezone to taipei
@@ -84,6 +82,13 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     && apt-get clean && apt-get autoremove \
     && rosdep init \
     && rosdep update
+
+# install wiringPi
+RUN git clone https://github.com/WiringPi/WiringPi.git \
+    cd WiringPi \
+    ./build \
+    cd .. \
+    rm -rf WiringPi
 
 # install python library
 # gps3 -> gps library

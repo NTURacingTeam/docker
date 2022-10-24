@@ -27,7 +27,6 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # tzdata -> timezone
 # vim -> command line text editor
 # wget -> downloader
-# wiringpi -> gpio library for rpi
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
@@ -49,7 +48,6 @@ RUN apt-get update && \
     tzdata \
     vim \
     wget \
-    wiringpi \
     && apt-get clean && apt-get autoremove
 
 # configure timezone to taipei
@@ -86,6 +84,13 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
     && apt-get clean && apt-get autoremove \
     && rosdep init
 
+# install wiringPi
+RUN git clone https://github.com/WiringPi/WiringPi.git \
+    cd WiringPi \
+    ./build \
+    cd .. \
+    rm -rf WiringPi
+
 # install matlab R2020b
 # using older version of mmatlab in presentation of too old glibc version of ubuntu20.04
 RUN wget https://www.mathworks.com/mpm/glnxa64/mpm \
@@ -120,7 +125,9 @@ WORKDIR /home/docker
 
 # install python library
 # gps3 -> gps library
-RUN pip install gps3
+# RPi.GPIO -> accessing rpi gpio
+RUN pip install gps3 \
+    RPi.GPIO
 
 # update ros dependencies in non-user directory
 # prebuild ws once, using bash warpper for avoiding wierd problems
