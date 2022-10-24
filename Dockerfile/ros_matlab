@@ -86,10 +86,10 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
 
 # install wiringPi
 RUN git clone https://github.com/WiringPi/WiringPi.git \
-    cd WiringPi \
-    ./build \
-    cd .. \
-    rm -rf WiringPi
+    && cd WiringPi \
+    && ./build \
+    && cd .. \
+    && rm -rf WiringPi
 
 # install matlab R2020b
 # using older version of mmatlab in presentation of too old glibc version of ubuntu20.04

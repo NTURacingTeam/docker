@@ -85,10 +85,10 @@ RUN bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) mai
 
 # install wiringPi
 RUN git clone https://github.com/WiringPi/WiringPi.git \
-    cd WiringPi \
-    ./build \
-    cd .. \
-    rm -rf WiringPi
+    && cd WiringPi \
+    && ./build \
+    && cd .. \
+    && rm -rf WiringPi
 
 # install python library
 # gps3 -> gps library
