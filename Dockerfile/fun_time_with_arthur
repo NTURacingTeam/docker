@@ -106,7 +106,7 @@ RUN useradd --create-home --shell /bin/bash docker \
     && echo 'docker\ndocker' | passwd \
     && echo 'docker\ndocker' | passwd docker
 
-
+# install micro ros
 RUN mkdir -p /home/docker/microros_ws/src \
     && bash -c "source /opt/ros/humble/setup.bash \
         && cd /home/docker/microros_ws \
@@ -119,6 +119,7 @@ RUN mkdir -p /home/docker/microros_ws/src \
 
 # change to user "docker" and change to home directory
 USER docker
+ENV USER docker
 WORKDIR /home/docker
 
 # update ros dependencies in non-user directory

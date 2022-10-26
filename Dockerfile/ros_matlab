@@ -119,8 +119,10 @@ RUN useradd --create-home --shell /bin/bash docker \
     && echo 'docker\ndocker' | passwd \
     && echo 'docker\ndocker' | passwd docker
 
+
 # change to user "docker" and change to home directory
 USER docker
+ENV USER docker
 WORKDIR /home/docker
 
 # install python library

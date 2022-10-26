@@ -89,6 +89,7 @@ while true; do
                     echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
                     --gpus all \
+                    -e NVIDIA_DRIVER_CAPABILITIES=all \
                     --privileged \
                     --env="QT_X11_NO_MITSHM=1" \
                     --env="DISPLAY=${IP}${DISPLAY}" \

@@ -97,6 +97,7 @@ RUN pip install gps3 \
     RPi.GPIO
 
 # switch to root home directory
+ENV USER root
 WORKDIR /root
 
 # prepare ro environment

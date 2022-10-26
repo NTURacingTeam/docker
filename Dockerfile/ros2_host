@@ -91,6 +91,7 @@ RUN useradd --create-home --shell /bin/bash docker \
 
 # change to user "docker" and change to home directory
 USER docker
+ENV USER docker
 WORKDIR /home/docker
 
 # update ros dependencies in non-user directory
