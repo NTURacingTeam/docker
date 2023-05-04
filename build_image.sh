@@ -9,8 +9,8 @@ COLOR_RED='\e[1;31m'
 
 # add display host
 if [ $(uname) == "Linux" ]; then
-    xhost local:root
-    xhost +local:root
+    xhost local:root &>/dev/null
+    xhost +local:root &>/dev/null
 fi
 
 # build docker image

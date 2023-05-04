@@ -11,10 +11,10 @@ COLOR_RED='\e[1;31m'
 # reading command with bash arguement support
 if [[ -z $1 ]]; then
     echo "What do you want to do?"
-    echo -e "\t1. create container(create)"
+    echo -e "\t1. create container (create)"
     echo -e "\t2. run container (run)"
     echo -e "\t3. attach into container shell (shell)"
-    echo -e "\t4. stop the container(stop)"
+    echo -e "\t4. stop the container (stop)"
     read -p "(create/run/shell/stop): " COMMAND
 else
     COMMAND=$1
@@ -61,8 +61,6 @@ while true; do
             if ! [[ -d packages/${CONTAINER_NAME} ]]; then
                 mkdir -p packages/${CONTAINER_NAME}
             fi
-            # get ip address
-            IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 
             # if used in rpi
             if [ ${IMAGE_NAME} == "ros_rpi" ]; then
@@ -89,10 +87,10 @@ while true; do
                     echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
                     --gpus all \
-                    -e NVIDIA_DRIVER_CAPABILITIES=all \
                     --privileged \
+                    --env="NVIDIA_DRIVER_CAPABILITIES=all" \
                     --env="QT_X11_NO_MITSHM=1" \
-                    --env="DISPLAY=${IP}${DISPLAY}" \
+                    --env="DISPLAY=${DISPLAY}" \
                     --volume="/dev:/dev:rw" \
                     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                     --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
@@ -100,7 +98,8 @@ while true; do
                     --volume="/etc/localtime:/etc/localtime:ro" \
                     --hostname ${CONTAINER_NAME} \
                     --add-host ${CONTAINER_NAME}:127.0.1.1 \
-                    -p 8080:8080 \
+                    -p 8080:8080/tcp -p 8080:8080/udp \
+                    -p 7860:7860/tcp -p 7860:7860/udp \
                     --name ${CONTAINER_NAME} \
                     -u docker \
                     ${IMAGE_NAME}
@@ -109,7 +108,7 @@ while true; do
                     docker run -itd -u $(id -u):$(id -g) \
                     --privileged \
                     --env="QT_X11_NO_MITSHM=1" \
-                    --env="DISPLAY=${IP}${DISPLAY}" \
+                    --env="DISPLAY=${DISPLAY}" \
                     --volume="/dev:/dev:rw" \
                     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                     --volume="$(pwd)/packages/${CONTAINER_NAME}:/home/docker/ws/src:rw" \
@@ -117,7 +116,7 @@ while true; do
                     --volume="/etc/localtime:/etc/localtime:ro" \
                     --hostname ${CONTAINER_NAME} \
                     --add-host ${CONTAINER_NAME}:127.0.1.1 \
-                    -p 8080:8080 \
+                    -p 8080:8080/tcp -p 8080:8080/udp \
                     --name ${CONTAINER_NAME} \
                     -u docker \
                     ${IMAGE_NAME}

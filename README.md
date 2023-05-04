@@ -132,11 +132,15 @@ The image is based on 11.7.0-base-ubuntu22.04, which is an ubuntu 20.04 image wi
 - python3-colcon-common-extensions -> build ros2 workspace
 - python3-pip -> python package manager
 - python3-rosdep -> ros dependencies manager
+- ros-humble-ros2-controllers -> ros2 controllers
 - ros-humble-desktop-full -> ros2
 - ros-humble-gazebo-ros-pkgs -> gazebo
+- ros-humble-joint-state-publisher-gui -> ros2 gui joint state publisher
 - ros-humble-plotjuggler -> ros2 plotting tool
-- ros-humble-ros2-cpntroller -> ros2 controllers
+- ros-humble-ros2-controllers -> ros2 controllers
+- ros-humble-ros2-control-test-assets -> test assets for ros2_control
 - ros-humble-ros2-socketcan -> ros2 can driver
+- ros-humble-rqt-joint-trajectory-controller -> controlling joint using gui
 - ros-humble-teleop-twist-keyboard -> ros2 keyboard control
 - sudo -> executing commands as root
 - swig -> wrapper for C/C++ to connect to scripting language
@@ -322,11 +326,14 @@ The image is based on ubuntu 22.04 with the following applications installed:
 - net-tools -> network configurator
 - python3-pip -> python package manager
 - python3-rosdep -> ros2 dependencies manager
+- ros-humble-ros2-controllers -> ros2 controllers
 - ros-humble-desktop-full -> ros2
 - ros-humble-gazebo-ros-pkgs -> gazebo
-- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
 - ros-humble-plotjuggler -> ros2 plotting tool
-- ros-humble-ros2-socketcan -> ros2 can tool
+- ros-humble-ros2-controllers -> ros2 controllers
+- ros-humble-ros2-control-test-assets -> test assets for ros2_control
+- ros-humble-ros2-socketcan -> ros2 can driver
+- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
 - swig -> wrapper for C/C++ to connect to scripting language
 - tmux -> terminal multiplexer
 - tzdata -> timezone

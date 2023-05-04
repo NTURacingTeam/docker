@@ -12,6 +12,7 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # build-essential -> compiler
 # byobu -> terminal multiplexer
 # ca-certificates -> certificate manager
+# clang-format -> code formatter
 # curl -> internet commuincation library
 # feh -> image viewer
 # git -> version control
@@ -21,7 +22,8 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # libgl1-mesa-dev -> mujoco-py dependancy
 # libgl1-mesa-glx -> mujoco-py dependancy
 # libglew-dev -> mujoco-py dependancy
-# libglfw3 -> mujoco-py dependancy
+# libglfw3 -> mujoco-py, imgui dependancy
+# libglfw3-dev -> imgui dependency
 # libosmesa6-dev -> mujoco-py dependancy
 # lsb-release -> linux standard base
 # net-tools -> network configurator
@@ -40,6 +42,7 @@ RUN apt-get update && \
     build-essential \
     byobu \
     ca-certificates \
+    clang-format \
     curl \
     feh \
     git \
@@ -50,6 +53,7 @@ RUN apt-get update && \
     libgl1-mesa-glx \
     libglew-dev \
     libglfw3 \
+    libglfw3-dev \
     libosmesa6-dev \
     lsb-release \
     net-tools \
@@ -77,11 +81,19 @@ RUN TZ=Asia/Taipei \
 # add apt key for installing ros2
 # python3-colcon-common-extensions -> build ros2 workspace
 # python3-rosdep -> ros dependencies manager
+# ros-humble-controller-manager -> ros2 controller manager
 # ros-humble-desktop-full -> ros2
+# ros-humble-dynamixel-workbench-toolbox -> dynamixel driver
 # ros-humble-gazebo-ros-pkgs -> gazebo
-# ros-humble-plotjuggler -> ros2 plotting tool
-# ros-humble-ros2-controller -> ros2 controllers
+# ros-humble-gazebo-ros2-control -> gazebo ros2 control
+# ros-humble-joint-state-publisher-gui -> ros2 gui joint state publisher
+# ros-humble-moveit -> robot kinematic controller
+# ros-humble-realsense2-description -> used in the example of dynamixel-hradware
+# ros-humble-ros2-control -> ros2 control
+# ros-humble-ros2-controllers -> ros2 controllers
+# ros-humble-ros2-control-test-assets -> test assets for ros2_control
 # ros-humble-ros2-socketcan -> ros2 can driver
+# ros-humble-rqt-joint-trajectory-controller -> controlling joint using gui
 # ros-humble-teleop-twist-keyboard -> ros2 keyboard control
 # initialize and update ros dependencies as root
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
@@ -89,15 +101,30 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     && apt update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-rosdep \
+    ros-humble-controller-manager \
     ros-humble-desktop-full \
+    ros-humble-dynamixel-workbench-toolbox \
     ros-humble-gazebo-ros-pkgs \
-    ros-humble-plotjuggler \
+    ros-humble-gazebo-ros2-control \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-moveit \
+    ros-humble-realsense2-description \
+    ros-humble-ros2-control \
     ros-humble-ros2-controllers \
+    ros-humble-ros2-control-test-assets \
     ros-humble-ros2-socketcan \
+    ros-humble-rqt-joint-trajectory-controller \
     ros-humble-teleop-twist-keyboard \
     && apt-get clean && apt-get autoremove \
     && rosdep init \
     && rosdep update
+
+# install wiringPi
+RUN git clone https://github.com/WiringPi/WiringPi.git \
+    && cd WiringPi \
+    && ./build \
+    && cd .. \
+    && rm -rf WiringPi
 
 # adding user "docker" on host
 # password "docker" for user 'root' and 'docker'
