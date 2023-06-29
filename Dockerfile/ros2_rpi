@@ -1,36 +1,42 @@
 # image based on ubuntu 22.04
 FROM ros:humble-ros-base-jammy
 
-# adding user "docker" on host
-# password "docker" for user 'root' and 'docker'
-RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo,dialout docker \
-    && echo 'docker\ndocker' | passwd \
-    && echo 'docker\ndocker' | passwd docker
+# docker specific tweaks, see
+# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
+RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/docker-clean \
+    && echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/docker-clean \
+    && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean
 
-# change to user "docker" and change to home directory
-USER docker
-ENV USER docker
-WORKDIR /home/docker
+# update package repository information and install with no prompt
+# bash-completion -> bash auto-complete
+# net-tools -> network configurator
+# tmux -> terminal multiplexer
+# vim -> command line text editor
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    bash-completion \
+    net-tools \
+    tmux \
+    vim \
+    && apt-get clean && apt-get autoremove
 
-# update ros dependencies in non-user directory
+# install wiringPi
+RUN git clone https://github.com/WiringPi/WiringPi.git \
+    && cd WiringPi \
+    && ./build \
+    && cd .. \
+    && rm -rf WiringPi
+
 # prebuild ws once, using bash warpper for avoiding wierd problems
-RUN rosdep update \
-    && bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
+RUN bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
 
-# copy .bashrc for executing it everytime attaching to the container and modify it to
-# export LANG=en_US.UTF-8 -> use en_US.UTF-8 locale everytime
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
-# source /opt/ros/humble/setup.bash -> source ros
 # source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
-# export _colcon_cd_root=/opt/ros/humble/ -> setup colcon_cd
+# export _colcon_cd_root=/opt/ros/${$ROS_DISTRO}/ -> setup colcon_cd
 # source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
 # source ~/ws/install/setup.bash -> source ws
-RUN cp /etc/skel/.bashrc /home/docker \
-    && echo 'export LANG=en_US.UTF-8' >> ~/.bashrc \
-    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
-    && echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc \
+RUN echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
-    && echo 'export _colcon_cd_root=/opt/ros/humble/' >> ~/.bashrc \
+    && echo 'export _colcon_cd_root=/opt/ros/${$ROS_DISTRO}/' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \
     && echo 'source ~/ws/install/setup.bash' >> ~/.bashrc

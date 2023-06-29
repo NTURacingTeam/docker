@@ -63,7 +63,7 @@ while true; do
             fi
 
             # if used in rpi
-            if [ ${IMAGE_NAME} == "ros_rpi" || ${IMAGE_NAME} == "ros2_rpi" ]; then
+            if [[ ${IMAGE_NAME} == "ros_rpi" || ${IMAGE_NAME} == "ros2_rpi" ]]; then
                 echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image using rpi configuration"
                 docker run -itd \
                 --privileged \
