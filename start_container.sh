@@ -63,7 +63,7 @@ while true; do
             fi
 
             # if used in rpi
-            if [ ${IMAGE_NAME} == "ros_rpi" ]; then
+            if [ ${IMAGE_NAME} == "ros_rpi" || ${IMAGE_NAME} == "ros2_rpi" ]; then
                 echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image using rpi configuration"
                 docker run -itd \
                 --privileged \
@@ -99,7 +99,6 @@ while true; do
                     --hostname ${CONTAINER_NAME} \
                     --add-host ${CONTAINER_NAME}:127.0.1.1 \
                     -p 8080:8080/tcp -p 8080:8080/udp \
-                    -p 7860:7860/tcp -p 7860:7860/udp \
                     --name ${CONTAINER_NAME} \
                     -u docker \
                     ${IMAGE_NAME}

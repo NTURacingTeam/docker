@@ -1,0 +1,36 @@
+# image based on ubuntu 22.04
+FROM ros:humble-ros-base-jammy
+
+# adding user "docker" on host
+# password "docker" for user 'root' and 'docker'
+RUN useradd --create-home --shell /bin/bash docker \
+    && usermod -aG sudo,dialout docker \
+    && echo 'docker\ndocker' | passwd \
+    && echo 'docker\ndocker' | passwd docker
+
+# change to user "docker" and change to home directory
+USER docker
+ENV USER docker
+WORKDIR /home/docker
+
+# update ros dependencies in non-user directory
+# prebuild ws once, using bash warpper for avoiding wierd problems
+RUN rosdep update \
+    && bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
+
+# copy .bashrc for executing it everytime attaching to the container and modify it to
+# export LANG=en_US.UTF-8 -> use en_US.UTF-8 locale everytime
+# export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
+# source /opt/ros/humble/setup.bash -> source ros
+# source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
+# export _colcon_cd_root=/opt/ros/humble/ -> setup colcon_cd
+# source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
+# source ~/ws/install/setup.bash -> source ws
+RUN cp /etc/skel/.bashrc /home/docker \
+    && echo 'export LANG=en_US.UTF-8' >> ~/.bashrc \
+    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+    && echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc \
+    && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
+    && echo 'export _colcon_cd_root=/opt/ros/humble/' >> ~/.bashrc \
+    && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \
+    && echo 'source ~/ws/install/setup.bash' >> ~/.bashrc
