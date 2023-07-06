@@ -11,10 +11,14 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # bash-completion -> bash auto-complete
 # ca-certificates -> certificate manager
 # curl -> internet commuincation library
+# htop -> system monitor
+# iproute2 -> network configurator
 # keyboard-configuration -> keyboard configuration
 # locales -> configure locale
 # lsb-release -> linux standard base
 # net-tools -> network configurator
+# python3-pip -> python3 package manager
+# python3-trasnforms3d -> dependency for nmea_navsat_driver
 # sudo -> executing commands as root
 # swig -> wrapper for C/C++ to connect to scripting language
 # tmux -> terminal multiplexer
@@ -25,10 +29,14 @@ RUN apt-get update && \
     bash-completion \
     ca-certificates \
     curl \
+    htop \
+    iproute2 \
     keyboard-configuration \
     locales \
     lsb-release \
     net-tools \
+    python3-pip \
+    python3-trasnforms3d \
     sudo \
     swig \
     tmux \
@@ -63,12 +71,12 @@ RUN rosdep update \
 # copy .bashrc for executing it everytime attaching to the container and modify it to
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
 # source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
-# export _colcon_cd_root=/opt/ros/${$ROS_DISTRO}/ -> setup colcon_cd
+# export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/ -> setup colcon_cd
 # source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
 # source ~/ws/install/setup.bash -> source ws
 RUN cp /etc/skel/.bashrc /home/docker \
     && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
-    && echo 'export _colcon_cd_root=/opt/ros/${$ROS_DISTRO}/' >> ~/.bashrc \
+    && echo 'export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \
     && echo 'source ~/ws/install/setup.bash' >> ~/.bashrc
