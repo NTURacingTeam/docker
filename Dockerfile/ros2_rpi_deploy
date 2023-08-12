@@ -1,5 +1,5 @@
-# image based on ros2 humble desktop full
-FROM osrf/ros:humble-desktop-full-jammy
+# image based on ros2 humble base
+FROM ros:humble-ros-base-jammy
 
 # docker specific tweaks, see
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
@@ -9,35 +9,15 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 
 # update package repository information and install with no prompt
 # bash-completion -> bash auto-complete
-# ca-certificates -> certificate manager
-# curl -> internet commuincation library
 # htop -> system monitor
-# keyboard-configuration -> keyboard configuration
-# locales -> configure locale
-# lsb-release -> linux standard base
-# net-tools -> network configurator
-# python3-pip -> python3 package manager
-# sudo -> executing commands as root
-# swig -> wrapper for C/C++ to connect to scripting language
 # tmux -> terminal multiplexer
 # vim -> command line text editor
-# wget -> downloader
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
-    ca-certificates \
-    curl \
     htop \
-    keyboard-configuration \
-    locales \
-    lsb-release \
-    net-tools \
-    python3-pip \
-    sudo \
-    swig \
     tmux \
     vim \
-    wget \
     && apt-get clean && apt-get autoremove
 
 # install wiringPi
@@ -47,29 +27,26 @@ RUN git clone https://github.com/WiringPi/WiringPi.git \
     && cd .. \
     && rm -rf WiringPi
 
-# adding user "docker" on host
-# password "docker" for user 'root' and 'docker'
-RUN useradd --create-home --shell /bin/bash docker \
-    && usermod -aG sudo,dialout docker \
-    && echo 'docker\ndocker' | passwd \
-    && echo 'docker\ndocker' | passwd docker
+# switch to root home directory
+ENV USER root
+WORKDIR /root
 
-# change to user "docker" and change to home directory
-USER docker
-ENV USER docker
-WORKDIR /home/docker
+# clone nturt_ros and install dependencies
+RUN mkdir -p ~/ws/src \
+    && cd ~/ws/src \
+    && git clone https://github.com/NTURacingTeam/nturt_ros.git --recurse-submodules \
+    && cd ~/ws \
+    && rosdep install --from-paths src --ignore-src -r -y
 
-# prebuild ws once, using bash warpper for avoiding wierd problems
-RUN bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
+# build, using bash warpper for avoiding wierd problems
+RUN bash -c 'source /opt/ros/humble/setup.bash && cd ~/ws && colcon build --symlink-install'
 
-# copy .bashrc for executing it everytime attaching to the container and modify it to
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
 # source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
 # export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/ -> setup colcon_cd
 # source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
 # source ~/ws/install/setup.bash -> source ws
-RUN cp /etc/skel/.bashrc /home/docker \
-    && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+RUN echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
     && echo 'export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \

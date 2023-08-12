@@ -22,7 +22,7 @@ fi
 while true; do
     if [ ${COMMAND} == "create" ]; then
         if [[ -z $(docker images | sed -n '2,$p') ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No docker image has been built, please build one first${COLOR_REST}"
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No docker image has been built, please build one first${COLOR_REST}" >&2
         else
             # reading container name with bash arguemant support
             if [[ -z $2 ]]; then
@@ -31,7 +31,7 @@ while true; do
                 CONTAINER_NAME=$2
             fi
             while [[ -n $(docker container list -a | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; do
-                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container name has already taken${COLOR_REST}"
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container name has already taken${COLOR_REST}" >&2
                 read -p "Please enter another name or empty to abort: " CONTAINER_NAME
                 if [[ -z ${CONTAINER_NAME} ]]; then
                     echo "Abort"
@@ -48,7 +48,7 @@ while true; do
                 IMAGE_NAME=$3
             fi
             while [[ -z $(docker images | sed -n '2,$p' | awk '{print $1}' | grep -w ${IMAGE_NAME}) ]]; do
-                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The image does not exist, please build it first${COLOR_REST}"
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The image does not exist, please build it first${COLOR_REST}" >&2
                 read -p "Please enter an existing image name or empty to abort: " IMAGE_NAME
                 if [[ -z ${IMAGE_NAME} ]]; then
                     echo "Abort"
@@ -80,9 +80,9 @@ while true; do
             else
                 # get display environment variable
                 DISPLAY=$(printenv DISPLAY)
-                
+
                 # if host has gpu support
-                docker run -it --rm --gpus all ubuntu:20.04 nvidia-smi &>/dev/null
+                docker run -it --rm --gpus all ubuntu:22.04 nvidia-smi &>/dev/null
                 if [ $? == 0 ]; then
                     echo "Creating ${CONTAINER_NAME} with ${IMAGE_NAME} image and gpu support"
                     docker run -itd -u $(id -u):$(id -g) \
@@ -126,7 +126,7 @@ while true; do
         break
     elif [ ${COMMAND} == "run" ]; then
         if [[ -z $(docker container list -f "status=exited" | sed -n '2,$p') ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}All containers are running or no container has been built, please create one first${COLOR_REST}"
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}All containers are running or no container has been built, please create one first${COLOR_REST}" >&2
         else
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
@@ -138,9 +138,9 @@ while true; do
             fi
             while true; do
                 if [[ -z $(docker container list -f "status=exited" | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; then
-                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is running, please create it first${COLOR_REST}"
+                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is running, please create it first${COLOR_REST}" >&2
                 elif [[ -n $(docker container list | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; then
-                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container is already running${COLOR_REST}"
+                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container is already running${COLOR_REST}" >&2
                 else
                     echo "Starting ${CONTAINER_NAME}"
                     docker start ${CONTAINER_NAME}
@@ -156,7 +156,7 @@ while true; do
         break
     elif [ ${COMMAND} == "shell" ]; then
         if [[ -z $(docker container list -a | sed -n '2,$p') ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No containers has been built, please create one first${COLOR_REST}"
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No containers has been built, please create one first${COLOR_REST}" >&2
         else
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
@@ -168,7 +168,7 @@ while true; do
             fi
             while true; do
                 if [[ -z $(docker container list -a | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; then
-                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist, please create it first${COLOR_REST}"
+                    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist, please create it first${COLOR_REST}" >&2
                 elif [[ -n $(docker container list | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; then
                     docker exec -it ${CONTAINER_NAME} bash
                     break
@@ -188,7 +188,7 @@ while true; do
         break
     elif [ ${COMMAND} == "stop" ]; then
         if [[ -z $(docker container list | sed -n '2,$p') ]]; then
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}There is currently no container running${COLOR_REST}"
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}There is currently no container running${COLOR_REST}" >&2
         else
             # reading name with bash arguement support
             if [[ -z $2 ]]; then
@@ -199,7 +199,7 @@ while true; do
                 CONTAINER_NAME=$2
             fi
             while [[ -z $(docker container list | sed -n '2,$p' | awk '{print $NF}' | grep -w ${CONTAINER_NAME}) ]]; do
-                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is not running${COLOR_REST}"
+                echo -e "${COLOR_RED}Error: ${HIGHLIGHT}The container does not exist or is not running${COLOR_REST}" >&2
                 read -p "Please choose a running container to stop or empty to abort: " CONTAINER_NAME
                 if [[ -z ${CONTAINER_NAME} ]]; then
                     echo "Abort"
@@ -210,7 +210,7 @@ while true; do
         fi
         break
     else
-        echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}"
+        echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}" >&2
         read -p "Please enter correct command or empty to abort. (create/run/shell/stop/empty): " COMMAND
         if [[ -z ${COMMAND} ]]; then
             echo "Abort"

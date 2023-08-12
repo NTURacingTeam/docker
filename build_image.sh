@@ -16,7 +16,7 @@ fi
 # build docker image
 # reading image file name with bash arguement support
 if [[ -z $(ls Dockerfile) ]]; then
-    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No image availible in directory 'Dockerfile'${COLOR_REST}"
+    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}No image availible in directory 'Dockerfile'${COLOR_REST}" >&2
 elif [[ -z $1 ]]; then
     echo "The following are the docker images in directory 'Dockerfile' that you can build your image from:"
     ls -l Dockerfile | sed -n '2,$p' | awk '{print $NF}'
@@ -25,7 +25,7 @@ else
     IMAGE_FILE=$1
 fi
 while [[ -z $(ls Dockerfile | grep -w ${IMAGE_FILE}) ]]; do
-    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown image file${COLOR_REST}"
+    echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown image file${COLOR_REST}" >&2
     read -p "Please enter correct image file you want to build form or empty to abort. " IMAGE_FILE
     if [[ -z ${IMAGE_FILE} ]]; then
     echo "Abort"
@@ -53,7 +53,7 @@ else
         echo "Abort with no action"
             break
         else
-            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}"
+            echo -e "${COLOR_RED}Error: ${HIGHLIGHT}Unknown option${COLOR_REST}" >&2
             read -p "Please enter correct option or empty to abort. (y/n/empty): " TO_BUILD
             if [[ -z ${TO_BUILD} ]]; then
             echo "Abort"

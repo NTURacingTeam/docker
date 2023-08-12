@@ -14,7 +14,7 @@ Install docker on your computer, please checkout [Install Docker Engine on Ubunt
 
 In order to use docker, first you have to build an image, and then create a container.
 
-There two bash scripts provided to simplify the use of docker virtual environment, namely `build_image.sh` for building images and `start_container.sh` for managing containers.
+Here two bash scripts provided to simplify the use of docker virtual environment, namely `build_image.sh` for building images and `start_container.sh` for managing containers.
 
 ### build_image.sh
 
@@ -95,250 +95,12 @@ where `COMMAND` is the command listed above, `CONTAINER_NAME` is the container y
 
 #### Specific changes for deploying to rpi
 
-When creating a container from `ros_rpi` image, there will be some sepcific changes:
+When creating a container from `ros_rpi` or `ros2_rpi` images, there will be some sepcific changes:
 
 1. The network of the container and the host are not separated
 2. The default user of the container is root
 
-In another word, creating and using this container is as if you are always root on the host, which is very dangerious, so please be careful!
-
-## Image environment
-
-The following is the description of the image environments.
-
-### fun_time_with_arthur
-
-The image is based on 11.7.0-base-ubuntu22.04, which is an ubuntu 20.04 image with Nvida cuda support and has the following applications installed:
-
-- bash-completion -> bash auto-complete
-- build-essential -> compiler
-- byobu -> terminal multiplexer
-- ca-certificates -> certificate manager
-- curl -> internet commuincation library
-- feh -> image viewer
-- git -> version control
-- gnupg2 -> encryption
-- keyboard-configuration -> keyboard configuration
-- locales -> configure locale
-- libgl1-mesa-dev -> mujoco-py dependancy
-- libgl1-mesa-glx -> mujoco-py dependancy
-- libglew-dev -> mujoco-py dependancy
-- libglfw3 -> mujoco-py dependancy
-- libosmesa6-dev -> mujoco-py dependancy
-- lsb-release -> linux standard base
-- net-tools -> network configurator
-- nvidia-cuda-toolkit -> for using gpu
-- patchelf -> mujoco-py dependancy
-- python3-colcon-common-extensions -> build ros2 workspace
-- python3-pip -> python package manager
-- python3-rosdep -> ros dependencies manager
-- ros-humble-ros2-controllers -> ros2 controllers
-- ros-humble-desktop-full -> ros2
-- ros-humble-gazebo-ros-pkgs -> gazebo
-- ros-humble-joint-state-publisher-gui -> ros2 gui joint state publisher
-- ros-humble-plotjuggler -> ros2 plotting tool
-- ros-humble-ros2-controllers -> ros2 controllers
-- ros-humble-ros2-control-test-assets -> test assets for ros2_control
-- ros-humble-ros2-socketcan -> ros2 can driver
-- ros-humble-rqt-joint-trajectory-controller -> controlling joint using gui
-- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
-- sudo -> executing commands as root
-- swig -> wrapper for C/C++ to connect to scripting language
-- tmux -> terminal multiplexer
-- tzdata -> timezone
-- vim -> command line text editor
-- wget -> downloader
-
-And python packages:
-
-- envpool -> simulating envrionment manager (but faster than opanAI-gym)
-- gym[mujoco] -> simulating envrionment manager for mujoco (may be replaced by envpool)
-- mujoco-py -> bindings for mujoco that's required for opneAI-gym
-- pygame -> simulation environment for openAI gym
-- pythorch -> machine learing engine
-- tqdm -> progress bar
-- visdom -> visualization tool for pytorch
-
-And other packages that are not installed traditionally
-
-- mujoco -> simulating environment
-- micro_ros_setup -> micro ros support
-
-### ros_host
-
-The image is based on ubuntu 20.04 with the following applications installed:
-
-- bash-completion -> bash auto-complete
-- build-essential -> compiler
-- byobu -> terminal multiplexer
-- ca-certificates -> certificate manager
-- curl -> internet commuincation library
-- feh -> image viewer
-- git -> version control
-- gnupg2 -> encryption
-- gpsd -> gps daemon
-- gpsd-clients -> gps client
-- keyboard-configuration -> keyboard configuration
-- lsb-release -> linux standard base
-- net-tools -> network configurator
-- python3-pip -> python package manager
-- python3-rosdep -> ros dependencies manager
-- python3-rosinstall -> ros installation tool
-- python3-rosinstall-generator -> ros install file generator
-- python3-wstool -> ros version control
-- ros-noetic-desktop-full -> ros
-- ros-noetic-gps-common -> for using gps with ros
-- ros-noetic-gpsd-client -> for using gps with ros
-- ros-noetic-teleop-twist-keyboard -> ros keyboard control
-- ros-noetic-rqt-multiplot -> ros multi-plotting tool
-- ros-noetic-socketcan-bridge -> ros can tool
-- swig -> wrapper for C/C++ to connect to scripting language
-- tmux -> terminal multiplexer
-- tzdata -> timezone
-- vim -> command line text editor
-- wget -> downloader
-
-And python packages
-
-- gps3 -> gps library
-- RPi.GPIO -> accessing rpi gpio
-
-And other packages that are not installed traditionally
-
-- wiringpi -> gpio library for rpi
-
-### ros_matlab
-
-The image is based on ubuntu 20.04 with the following applications installed:
-
-- bash-completion -> bash auto-complete
-- build-essential -> compiler
-- byobu -> terminal multiplexer
-- ca-certificates -> certificate manager
-- curl -> internet commuincation library
-- feh -> image viewer
-- git -> version control
-- gnupg2 -> encryption
-- gpsd -> gps daemon
-- gpsd-clients -> gps client
-- keyboard-configuration -> keyboard configuration
-- lsb-release -> linux standard base
-- net-tools -> network configurator
-- python3-pip -> python package manager
-- python3-rosdep -> ros dependencies manager
-- python3-rosinstall -> ros installation tool
-- python3-rosinstall-generator -> ros install file generator
-- python3-wstool -> ros version control
-- ros-noetic-desktop-full -> ros
-- ros-noetic-gps-common -> for using gps with ros
-- ros-noetic-gpsd-client -> for using gps with ros
-- ros-noetic-teleop-twist-keyboard -> ros keyboard control
-- ros-noetic-rqt-multiplot -> ros multi-plotting tool
-- ros-noetic-socketcan-bridge -> ros can tool
-- swig -> wrapper for C/C++ to connect to scripting language
-- tmux -> terminal multiplexer
-- tzdata -> timezone
-- vim -> command line text editor
-- wget -> downloader
-
-And python packages
-
-- gps3 -> gps library
-- RPi.GPIO -> accessing rpi gpio
-
-And matlab products:
-
-- Control_System_Toolbox
-- MATLAB
-- MATLAB_Coder
-- ROS_Toolbox
-- Simulink
-- Simulink_Coder
-- Simscape
-- Simscape_Driveline
-- Simescape_Electrical
-- Symbolic_Math_Toolbox
-- Vehicle_Dynamics_Blockset
-
-And other packages that are not installed traditionally
-
-- wiringpi -> gpio library for rpi
-
-### ros_rpi
-
-The image is based on ubuntu 20.04 with the following applications installed:
-
-- bash-completion -> bash auto-complete
-- build-essential -> compiler
-- byobu -> terminal multiplexer
-- ca-certificates -> certificate manager
-- curl -> internet commuincation library
-- feh -> image viewer
-- git -> version control
-- gnupg2 -> encryption
-- gpsd -> gps daemon
-- gpsd-clients -> gps client
-- keyboard-configuration -> keyboard configuration
-- libyaml-cpp-dev -> using yaml in cpp
-- lsb-release -> linux standard base
-- net-tools -> network configurator
-- python3-can -> can library
-- python3-pip -> python package manager
-- python3-rosdep -> ros dependencies manager
-- python3-rosinstall -> ros installation tool
-- python3-rosinstall-generator -> ros install file generator
-- python3-serial -> accessing serial port
-- python3-wstool -> ros version control
-- ros-noetic-ros_base -> ros base version
-- ros-noetic-gps-common -> for using gps with ros
-- ros-noetic-gpsd-client -> for using gps with ros
-- ros-noetic-socketcan-bridge -> ros can tool
-- swig -> wrapper for C/C++ to connect to scripting language
-- tmux -> terminal multiplexer
-- tzdata -> timezone
-- vim -> command line text editor
-- wget -> downloader
-
-And python packages
-
-- gps3 -> gps library
-- RPi.GPIO -> accessing rpi gpio
-
-And other packages that are not installed traditionally
-
-- wiringpi -> gpio library for rpi
-
-### ros2_host
-
-The image is based on ubuntu 22.04 with the following applications installed:
-
-- bash-completion -> bash auto-complete
-- build-essential -> compiler
-- byobu -> terminal multiplexer
-- ca-certificates -> certificate manager
-- curl -> internet commuincation library
-- feh -> image viewer
-- git -> version control
-- gnupg2 -> encryption
-- keyboard-configuration -> keyboard configuration
-- locales -> configure locale
-- lsb-release -> linux standard base
-- net-tools -> network configurator
-- python3-pip -> python package manager
-- python3-rosdep -> ros2 dependencies manager
-- ros-humble-ros2-controllers -> ros2 controllers
-- ros-humble-desktop-full -> ros2
-- ros-humble-gazebo-ros-pkgs -> gazebo
-- ros-humble-plotjuggler -> ros2 plotting tool
-- ros-humble-ros2-controllers -> ros2 controllers
-- ros-humble-ros2-control-test-assets -> test assets for ros2_control
-- ros-humble-ros2-socketcan -> ros2 can driver
-- ros-humble-teleop-twist-keyboard -> ros2 keyboard control
-- swig -> wrapper for C/C++ to connect to scripting language
-- tmux -> terminal multiplexer
-- tzdata -> timezone
-- vim -> command line text editor
-- wget -> downloader
+In another word, creating and using this container is as if you are always root on the host, which is **very dangerious**, so please be careful!
 
 ### ROS enviroment
 
@@ -355,7 +117,7 @@ source /opt/ros/noetic/setup.bash
 source ~/ws/devel/setup.bash
 ```
 
-has already being included in `~/.bashrc` file, so there is no need to source them everytime.
+has already being included in `~/.bashrc` file for `ros_host`, `ros_rpi` and `ros_matlab` images, so there is no need to source them everytime.
 
 ### ROS2
 
@@ -366,7 +128,7 @@ source /opt/ros/humble/setup.bash
 source ~/ws/install/setup.bash
 ```
 
-has already being included in `~/.bashrc` file, so there is no need to source them everytime.
+has already being included in `~/.bashrc` file for `ros2_host` and `ros2_rpi` images, so there is no need to source them everytime.
 
 ### Support for using nvidia gpu in docker
 

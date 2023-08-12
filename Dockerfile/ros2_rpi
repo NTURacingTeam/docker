@@ -1,4 +1,4 @@
-# image based on ubuntu 22.04
+# image based on ros2 humble base
 FROM ros:humble-ros-base-jammy
 
 # docker specific tweaks, see
@@ -10,20 +10,12 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # update package repository information and install with no prompt
 # bash-completion -> bash auto-complete
 # htop -> system monitor
-# iproute2 -> network configurator
-# net-tools -> network configurator
-# python3-pip -> python3 package manager
-# python3-trasnforms3d -> dependency for nmea_navsat_driver
 # tmux -> terminal multiplexer
 # vim -> command line text editor
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
     htop \
-    iproute2 \
-    net-tools \
-    python3-pip \
-    python3-trasnforms3d \
     tmux \
     vim \
     && apt-get clean && apt-get autoremove
@@ -36,6 +28,7 @@ RUN git clone https://github.com/WiringPi/WiringPi.git \
     && rm -rf WiringPi
 
 # switch to root home directory
+USER root
 ENV USER root
 WORKDIR /root
 
