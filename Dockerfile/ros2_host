@@ -1,5 +1,19 @@
 # image based on ros2 humble desktop full
-FROM osrf/ros:humble-desktop-full-jammy
+# for linux/amd64 platforms
+FROM --platform=linux/amd64 osrf/ros:humble-desktop-full-jammy as stage-amd64
+
+# for linux/arm64 platforms
+FROM --platform=linux/arm64 ros:humble-ros-base-jammy as stage-arm64
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-desktop-full=0.10.0-1* \
+    && rm -rf /var/lib/apt/lists/*
+
+# declare TARGETARCH to make it available
+ARG TARGETARCH
+
+# select final stage based on TARGETARCH ARG
+FROM stage-${TARGETARCH} as final
 
 # docker specific tweaks, see
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
@@ -70,6 +84,7 @@ RUN bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && co
 # source ~/ws/install/setup.bash -> source ws
 RUN cp /etc/skel/.bashrc /home/docker \
     && echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+    && echo '/opt/ros/${ROS_DISTRO}/setup.bash' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
     && echo 'export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \

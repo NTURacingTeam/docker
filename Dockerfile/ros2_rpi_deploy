@@ -35,19 +35,13 @@ WORKDIR /root
 RUN mkdir -p ~/ws/src \
     && cd ~/ws/src \
     && git clone https://github.com/NTURacingTeam/nturt_ros.git --recurse-submodules \
+    && git clone https://github.com/NTURacingTeam/nturt_test.git --recurse-submodules \
     && cd ~/ws \
     && rosdep install --from-paths src --ignore-src -r -y
 
 # build, using bash warpper for avoiding wierd problems
 RUN bash -c 'source /opt/ros/humble/setup.bash && cd ~/ws && colcon build --symlink-install'
 
-# export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
-# source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
-# export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/ -> setup colcon_cd
-# source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
-# source ~/ws/install/setup.bash -> source ws
-RUN echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
-    && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
-    && echo 'export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/' >> ~/.bashrc \
-    && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \
-    && echo 'source ~/ws/install/setup.bash' >> ~/.bashrc
+COPY ./ros2_rpi_deploy .
+
+CMD ["./ros2_rpi_deploy"]
