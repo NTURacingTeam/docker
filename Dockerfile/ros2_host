@@ -75,7 +75,7 @@ WORKDIR /home/docker
 
 # update rosdep in non-root user
 # prebuild ws once, using bash warpper for avoiding wierd problems
-RUN rosdep update \
+RUN rosdep update && \
     bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
 
 # copy .bashrc for executing it everytime attaching to the container and modify it to
