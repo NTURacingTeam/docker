@@ -1,5 +1,5 @@
-# image based on ros2 humble base
-FROM ros:humble-ros-base-jammy
+# image based on ros2 iron base
+FROM ros:iron-ros-base-jammy
 
 # docker specific tweaks, see
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
@@ -10,12 +10,16 @@ RUN echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/ap
 # update package repository information and install with no prompt
 # bash-completion -> bash auto-complete
 # htop -> system monitor
+# net-tools -> network configurator
+# python3-pip -> python3 package manager
 # tmux -> terminal multiplexer
 # vim -> command line text editor
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     bash-completion \
     htop \
+    net-tools \
+    python3-pip \
     tmux \
     vim \
     && apt-get clean && apt-get autoremove
@@ -36,11 +40,13 @@ WORKDIR /root
 RUN bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
 
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
+# source /opt/ros/${ROS_DISTRO}/setup.bash -> setup ros
 # source /usr/share/colcon_cd/function/colcon_cd.sh -> setup colcon_cd
 # export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/ -> setup colcon_cd
 # source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash -> colcon tab completion
 # source ~/ws/install/setup.bash -> source ws
 RUN echo 'export PATH=:${PATH}:~/.local/bin' >> ~/.bashrc \
+    && echo 'source /opt/ros/${ROS_DISTRO}/setup.bash' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_cd/function/colcon_cd.sh' >> ~/.bashrc \
     && echo 'export _colcon_cd_root=/opt/ros/${ROS_DISTRO}/' >> ~/.bashrc \
     && echo 'source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash' >> ~/.bashrc \
