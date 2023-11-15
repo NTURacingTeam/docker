@@ -8,7 +8,7 @@ We provide custom images for using ros, matlab, etc. on desktop computers or rpi
 
 ## Before you start
 
-Install docker on your computer, please checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+Install docker on your computer, please checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/). **Note that installing Docker Desktop would launch the containers on qemu virtualization, which would slow done the whole process. Make sure you Don't download anything about Docker Desktop.**
 
 ## Usage
 
