@@ -6,8 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix:
-        max-parallel: 1
         target: [host, rpi]
         distro: [base, devel]
 
