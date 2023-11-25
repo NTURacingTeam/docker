@@ -1,0 +1,32 @@
+name: Build and push docker image to docker hub
+
+on: [push]
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        distro: [base, devel]
+
+    steps:
+      - name: Build
+        uses: .github/actions/build_image
+        with:
+          target: host
+          distro: ${{ matrix.distro }}
+
+  rpi:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        distro: [base, devel]
+
+    steps:
+      - name: Build
+        uses: .github/actions/build_image
+        with:
+          target: rpi
+          distro: ${{ matrix.distro }}

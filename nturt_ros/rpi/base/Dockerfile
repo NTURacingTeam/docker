@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-pip \
     tmux \
     vim \
-    &&& rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # install wiringPi
 RUN git clone https://github.com/WiringPi/WiringPi.git \
