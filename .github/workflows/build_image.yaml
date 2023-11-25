@@ -13,11 +13,11 @@ jobs:
         platform: [linux/amd64, linux/arm64]
         include:
           - target: rpi
-            distro: devel
-        exclude:
+            distro: deploy
           - target: host
             distro: driverless
-            platform: linux/arm64
+            platform: linux/amd64
+        exclude:
           - target: jetson
             distro: devel
 
