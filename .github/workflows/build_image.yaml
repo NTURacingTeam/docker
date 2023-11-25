@@ -11,7 +11,9 @@ jobs:
         distro: [base, devel]
 
     steps:
-      - name: Build
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Build docker image
         uses: ./.github/actions/build_image
         with:
           target: host
@@ -25,7 +27,9 @@ jobs:
         distro: [base, devel]
 
     steps:
-      - name: Build
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Build docker image
         uses: ./.github/actions/build_image
         with:
           target: rpi
