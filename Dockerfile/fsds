@@ -1,0 +1,16 @@
+FROM osrf/ros:iron-desktop-full-jammy
+
+ENV QT_X11_NO_MITSHM=1
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+ENV NVIDIA_VISIBLE_DEVICES=all
+
+RUN apt-get install -y --no-install-recommends \
+    libvulkan1 \
+    xorg-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator/releases/download/v2.2.0/fsds-v2.2.0-linux.zip \
+    && unzip fsds-v2.2.0-linux.zip -d fsds && rm fsds-v2.2.0-linux.zip
+
+RUN git clone --recursive-submodules https://github.com/NTURacingTeam/FSDS.git \
+    && cd FSDS/AirSim && ./setup.sh && cd ../..

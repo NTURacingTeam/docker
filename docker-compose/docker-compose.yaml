@@ -15,26 +15,20 @@ services:
       - video
     environment:
       DISPLAY: ${DISPLAY}
-      XAUTHORITY: /home/docker/.Xauthority
       QT_X11_NO_MITSHM: 1
       NVIDIA_DRIVER_CAPABILITIES: all
+      NVIDIA_VISIBLE_DEVICES: all
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /dev:/dev
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${HOME}/.Xauthority:/home/docker/.Xauthority
-      - ${PWD}/packages/ros2:/home/docker/ws/src/
+      - ${PWD}/packages/ros2:/home/docker/ws/src
 
     tmpfs:
       - /tmp
     # ports:
       # - 8080:8080
-    deploy:
-      resources:
-        reservations:
-          devices:
-          - driver: nvidia
-            capabilities: [gpu]
+    runtime: nvidia
     tty: true
     stdin_open: true
     privileged: true

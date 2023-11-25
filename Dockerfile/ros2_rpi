@@ -37,7 +37,7 @@ ENV USER root
 WORKDIR /root
 
 # prebuild ws once, using bash warpper for avoiding wierd problems
-RUN bash -c 'source /opt/ros/humble/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
+RUN bash -c 'source /opt/ros/${ROS_DISTRO}/setup.bash && mkdir -p ws/src && cd ws && colcon build --symlink-install'
 
 # export PATH=:${PATH}:~/.local/bin -> add local(user specific) python library path to PATH environment variable
 # source /opt/ros/${ROS_DISTRO}/setup.bash -> setup ros
