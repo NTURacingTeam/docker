@@ -1,5 +1,5 @@
-# image based on nturt_ros rpi base
-FROM nturt_ros/ros:rpi-base
+# image based on nturacing/nturt_ros rpi base
+FROM nturacing/nturt_ros:rpi-base
 
 # switch to root home directory
 USER root

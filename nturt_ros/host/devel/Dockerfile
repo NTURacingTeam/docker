@@ -1,4 +1,4 @@
-# image based on nturt_ros host base
+# image based on nturacing/nturt_ros host base
 FROM nturacing/nturt_ros:host-base
 
 # adding user "docker" and add it to sudo group
