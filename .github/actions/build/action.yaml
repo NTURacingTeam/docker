@@ -1,0 +1,40 @@
+name: Build
+description: Build and push docker image to docker hub
+
+runs:
+  using: composite
+  inputs:
+    target:
+      description: Target device
+      required: true
+    distro:
+      description: Variant of the image
+      required: true
+    docker_username:
+      description: Docker username to login
+      required: true
+    docker_token:
+      description: Docker token to login
+      required: true
+
+  steps:
+    - name: Login to docker hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.docker_username }}
+        password: ${{ inputs.docker_token }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up docker buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: nturt_ros/${{ inputs.target }}/${{ inputs.distro }}
+        file: nturt_ros/${{ inputs.target }}/${{ inputs.distro }}/Dockerfile
+        push: true
+        tags: nturacing/nturt_ros:${{ inputs.target }}-${{ inputs.distro }}
+        platforms: linux/amd64,linux/arm64
