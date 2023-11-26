@@ -5,7 +5,7 @@ FROM nturacing/nturt_ros:rpi-devel
 # install dependencies and build ws
 RUN apt-get update \
     && . /opt/ros/${ROS_DISTRO}/setup.sh \
-    && cd ws && source install/setup.sh \
+    && cd ws && . install/setup.sh \
     && git clone --recurse-submodules https://github.com/NTURacingTeam/nturt_ros.git src/nturt_ros \
     && rosdep install --from-paths src --ignore-src -r -y  \
     && colcon build --symlink-install \

@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [host, rpi]
+        target: [host, rpi, jetson]
 
     steps:
       - name: Checkout the repository
