@@ -10,14 +10,14 @@ jobs:
       matrix:
         target: [host, rpi, jetson]
         distro: [base, devel]
-        platform: [linux/amd64, linux/arm64]
+        platforms: linux/amd64,linux/arm64
         include:
           - target: rpi
             distro: deploy
-            platform: linux/arm64
+            platforms: linux/arm64
           - target: host
             distro: driverless
-            platform: linux/amd64
+            platforms: linux/amd64
         exclude:
           - target: jetson
             distro: devel
@@ -45,4 +45,4 @@ jobs:
           file: nturt_ros/${{ matrix.target }}/${{ matrix.distro }}/Dockerfile
           push: true
           tags: nturacing/nturt_ros:${{ matrix.target }}-${{ matrix.distro }}
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
