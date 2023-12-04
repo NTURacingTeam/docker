@@ -1,12 +1,10 @@
 version: "3"
 
 services:
-  ros:
-    image: ros2_host
-    container_name: ros2
-    hostname: ros2
-    extra_hosts:
-      - "ros2:127.0.1.1"
+  container:
+    image: <TBD>
+    container_name: <TBD>
+    hostname: <TBD>
     user: docker:docker
     group_add:
       - audio
@@ -22,7 +20,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /dev:/dev
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${PWD}/packages/ros2:/home/docker/ws/src
+      - <Bind mount to container src>
 
     tmpfs:
       - /tmp

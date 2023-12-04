@@ -16,6 +16,7 @@ jobs:
       - name: Build and push Docker image
         uses: ./.github/actions/build
         with:
+          image: nturt_ros
           target: ${{ matrix.target }}
           distro: base
           docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -35,6 +36,7 @@ jobs:
       - name: Build and push Docker image
         uses: ./.github/actions/build
         with:
+          image: nturt_ros
           target: ${{ matrix.target }}
           distro: devel
           docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -58,6 +60,7 @@ jobs:
       - name: Build and push Docker image
         uses: ./.github/actions/build
         with:
+          image: nturt_ros
           target: ${{ matrix.target }}
           distro: ${{ matrix.distro }}
           docker_username: ${{ secrets.DOCKER_USERNAME }}

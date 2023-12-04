@@ -4,145 +4,156 @@
 
 Virtual environment are commanly used in order to avoid unnecessary environment setups as a result of different computers with different software installed. Here docker is adoped as a comprehensive virtual environment that is applicable for every software.
 
-We provide custom images for using ros, matlab, etc. on desktop computers or rpi, and handy bash scripts to control these virtual environment.
+We provide custom images ([Dockerfile](Dockerfile)) and runtime configs ([docker-compose.yaml](docker-compose)) for using ROS on desktop computers or RPis, jetsons, etc. And a handy command line tool to control these virtual environment.
 
-## Before you start
+## Before You Start
 
-Install docker on your computer, please checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/). **Note that installing Docker Desktop would launch the containers on qemu virtualization, which would slow done the whole process. Make sure you Don't download anything about Docker Desktop.**
-
-## Usage
-
-In order to use docker, first you have to build an image, and then create a container.
-
-Here two bash scripts provided to simplify the use of docker virtual environment, namely `build_image.sh` for building images and `start_container.sh` for managing containers.
-
-### build_image.sh
-
-This script is used for building a docker image for a container to run on, use this script by
+Install docker engine on your computer, please checkout [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/). Or simply run:
 
 ```bash=
-./build_image.sh
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
 ```
 
-you will be prompted to choose which docker image from dockerfiles in `Dockerfile` to build from.
+to install docker engine.
 
-> Note: The image name will be the same as the `dockerfile`'s name.
+**Note that installing Docker Desktop would launch the containers on QEMU virtualization, which would slow done the whole process. Make sure you Don't download anything about Docker Desktop.**
 
-If an existing image has the same name as the `dockerfile`'s name and the tag is `latest`, an option will prompt you to choose whether to change the existing image's tag to `older_versionX` and build the new image with tag `latest`.
+## Quick Start
 
-#### Using bash arguments
+1. Clone this repo to your computer:
 
-The script also support bash arguemnts as a short hand
+    ```bash=
+    git clone https://github.com/NTURacingTeam/docker.git
+    ```
+2. Install the command line tool:
 
-```bash=
-./build_image.sh IMAGE_FILE REPLACE_OPTION
+    ```bash=
+    ./install.sh
+    ```
+3. Create a container:
+
+    ```bash=
+    nturt_docker container create CONTAINER_NAME nturt_ros:host-devel host
+    ```
+4. Access the shell of the container:
+
+    ```bash=
+    nturt_docker container shell CONTAINER_NAME
+    ```
+
+Note: replace `CONTAINER_NAME` with the name of the container you want to use.
+
+## Images
+
+This repo provides different images for different purposes, distinguished by image names and tags in `name`:`target`-`distro` format, where `target` is the platform for the image and `distro` is different usage of the image.
+
+### Provided Images
+
+Images are built from [Dockerfile](Dockerfile) with following directory structure:
+
+```
+Dockerfile
+└── image_name
+    └── target
+        └── distro
+            ├── Dockerfile
+            └── ...
 ```
 
-where `IMAGE_FILE` is the dockerfile name in directory `Dockerfile` and `REPLACE_OPTION`(y/n) for controlling whether to change the tag of an image with same name to older vison.
+The following images are provided:
 
-#### Choosing which image to build
+- nturt_ros
+  - host
+    - base
+    - devel
+    - driverless
+  - jetson
+    - base
+    - deploy
+    - devel
+  - rpi
+    - base
+    - deploy
+    - devel
 
-The following are provided images:
-- fun_time_with_arthur: image with ros and machine learning libraries
-- ros_host: image with ros for desktop use
-- ros_matlab: image with ros and matlabfor desktop use
-- ros_rpi: image with ros for use on raspberry pi
+All images are built and published to [Docker Hub](https://hub.docker.com/r/nturacing/nturt_ros) so that you can pull them directly without building them first.
 
-For more information, please refer to `Image environment` in latter section.
+## Runtime Configs
 
-### start_container.sh
+Aside from images, docker also needs runtime configs for hardware, network, etc. to launch containers.
 
-This script is used for managing a docker container, use this script by
+Docker compose is used to manage the runtime configs of containers. The runtime configs are defined in [docker-compose](docker-compose) with following directory structure:
 
-```bash=
-./start_container.sh
+```
+docker-compose
+└── mode
+    └── docker-compose.yaml
 ```
 
-you will be prompted by different commands to manage docker containers:
+The following modes are provided:
 
-#### create
+- host: for running containers on host computer
+- host-nvidia: host mode with nvidia GPU support
+- rpi: for running containers on Raspberry Pi as root user
 
-This command create a container from existing images.
+## Command Line Tool
 
-> Note the host of the container will be the container's name and password in the container for default user `docker` is `docker`.
+A command line tool `nturt_docker` is provided to control the virtual environment.
 
-> Note: In order to let the container be connectable to the interent, port `8080` with host ip `127.0.1.1` is designated for the container, so you can only run a container at a time that was created by `start_container.sh` script.
+### Installation
 
-#### run
-
-This command run a stopped container.
-
-#### shell
-
-This command attach to the shell of a container, if the container is not running, the script will run it first.
-
-> Note: If you want to exit container's shell, simply use `exit` command.
-
-#### stop
-
-This stop a running container.
-
-#### Using bash arguments
-
-
-The script also support bash arguments as a short hand
+To use the command line tool globally with shell completion, run:
 
 ```bash=
-./start_container.sh COMMAND CONTAINER_NAME IMAGE_NAME
+./install.sh
 ```
 
-where `COMMAND` is the command listed above, `CONTAINER_NAME` is the container you want to manage, and `IMAGE_NAME` is for building container with specific image name.
+### Usage
 
-#### Specific changes for deploying to rpi
-
-When creating a container from `ros_rpi` or `ros2_rpi` images, there will be some sepcific changes:
-
-1. The network of the container and the host are not separated
-2. The default user of the container is root
-
-In another word, creating and using this container is as if you are always root on the host, which is **very dangerious**, so please be careful!
-
-### ROS enviroment
-
-There will be ros workspace directory preconfigured in `/home/docker/ws` and its subdirectory `src` mounted to the host as `./packages/CONTAINER_NAME`.
-
-The workspace `~/ws` has already been build(catkin_make) once, so there will also be `build` and `devel` directory beside the `src`.
-
-### ROS1
-
-The general ros environment setup
+The command line tool is used as:
 
 ```bash=
-source /opt/ros/noetic/setup.bash
-source ~/ws/devel/setup.bash
+nturt_docker COMMAND [OPTIONS]
 ```
 
-has already being included in `~/.bashrc` file for `ros_host`, `ros_rpi` and `ros_matlab` images, so there is no need to source them everytime.
+Use `--help` for all commands and options.
 
-### ROS2
+## Environment Setup
 
-The general ros2 environment setup
+Some setup are required in order for the containers to run as intended.
+
+### Bind Mount
+
+Bind mount is a way to mount a directory from host to container. It is useful when you want to share files between host and container. For example, you can mount your workspace directory to the container, so that you can edit your code on host and run it on container.
+
+A ROS workspace is preconfigured in `~/ws` and its subdirectory `src` mounted to the host at `path/to/this/repo/packages/CONTAINER_NAME`.
+
+### Hardware Management
+
+Usually, docker containers are not allowed to access hardware devices. But we can use `--privileged` flag and bind mount `/dev:/dev` to allow containers to access all host hardware. This is not recommended, but it is the easiest way to access hardware in containers.
+
+### Networking
+
+By default, containers are isolated from host network. We can use `--network host` flag to allow containers to access host network. This is not recommended, but it is the easiest way to access host network in containers.
+
+### Support for Nvidia GPU in Docker
+
+Docker containers may access nvidia GPU but it requires special setup, checkout how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
+
+Containers can access nvidia GPU by using `host-nvidia` mode when creating a container as:
 
 ```bash=
-source /opt/ros/humble/setup.bash
+nturt_docker container create CONTAINER_NAME IMAGE host-nvidia
+```
+
+### ROS
+
+The usual ROS environment setup as mentioned in [Configuring ROS2 Environment](https://docs.ros.org/en/rolling/Tutorials/Beginner-CLI-Tools/Configuring-ROS2-Environment.html):
+
+```bash=
+source /opt/ros/${ROS_DISTRO}/setup.bash
 source ~/ws/install/setup.bash
 ```
 
-has already being included in `~/.bashrc` file for `ros2_host` and `ros2_rpi` images, so there is no need to source them everytime.
-
-### Support for using nvidia gpu in docker
-
-The script `start_container.sh` support for using gpu inside docker container when creating container, and will automatically create containers if your docker have nvidia docker support. Checkout how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
-
-## Known Issues
-
-1. We have some issues when building on WSL. Such as using byobu and visualize environments.
-2. Inorder to use matlab, you first have to have the license and the license for matlab cloud use. Campus-wide licenses are already configured for cloud use, if your authorization failed with error code `4402`, please contact your license provider.
-3. If it is on **Debian**, follow the steps to solve libseccomp:
-  
-    ```bash=
-    #download from https://packages.debian.org/sid/libseccomp2, for example: 
-    wget http://ftp.tw.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.3-2_armhf.deb
-    sudo dpkg -i libseccomp2_2.5.3-2_armhf.deb
-    ref: https://askubuntu.com/questions/1263284/apt-update-throws-signature-error-in-ubuntu-20-04-container-on-arm
-    ```
+has already being included in `~/.bashrc` file for all `devel` distros of `nturt_ros` image, so there is no need to source them everytime.
