@@ -6,7 +6,7 @@ NTURT_DOCKER_DIR=$(dirname $(realpath $0))
 INSTALL_DIR=/usr/local/bin
 
 # install python modules
-pip3 install argcomplete docker PyYAML
+pip3 install argcomplete docker prettytable PyYAML
 
 # enable argcomplete globally
 # referenced from: https://github.com/kislyuk/argcomplete/blob/develop/scripts/activate-global-python-argcomplete
