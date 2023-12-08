@@ -1,15 +1,33 @@
-# image based on ros2 iron base
-FROM ros:iron-ros-base-jammy
+# image based on ros iron desktop full
+# for linux/amd64 platforms
+FROM --platform=linux/amd64 osrf/ros:iron-desktop-full-jammy as stage-amd64
+
+# for linux/arm64 platforms
+FROM --platform=linux/arm64 ros:iron-ros-base-jammy as stage-arm64
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-desktop-full \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG TARGETARCH
+
+# select final stage based on TARGETARCH ARG
+FROM stage-${TARGETARCH} as final
 
 # install general packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
     bash-completion \
+    ca-certificates \
+    curl \
     htop \
+    lsb-release \
     net-tools \
     python3-pip \
     tmux \
     udev \
+    unzip \
     vim \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # install jetson gpio

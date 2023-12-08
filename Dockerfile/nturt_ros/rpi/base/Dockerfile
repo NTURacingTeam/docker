@@ -4,11 +4,16 @@ FROM ros:iron-ros-base-jammy
 # install general packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
     bash-completion \
+    ca-certificates \
+    curl \
     htop \
+    lsb-release \
     net-tools \
     python3-pip \
     tmux \
+    unzip \
     vim \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # install wiringPi
