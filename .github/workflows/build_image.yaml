@@ -52,6 +52,8 @@ jobs:
             distro: deploy
           - target: host
             distro: driverless
+          - target: host
+            distro: fake_data
 
     steps:
       - name: Checkout the repository
