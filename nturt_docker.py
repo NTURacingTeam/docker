@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # PYTHON_ARGCOMPLETE_OK
 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 import argcomplete
 import argparse
 from datetime import datetime, timedelta, timezone
@@ -22,7 +22,8 @@ class Command(ABC):
     Abstract class for commands
     """
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def name(self) -> str:
         """
         Command name
@@ -33,7 +34,8 @@ class Command(ABC):
         """
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def help(self) -> str:
         """
         Help message
@@ -140,7 +142,8 @@ class Application(Command):
     Class for applications
     """
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def version(self) -> str:
         """
         Application version
@@ -155,8 +158,7 @@ class Application(Command):
         """
         Constructor
         """
-        parser = argparse.ArgumentParser(prog=self.name,
-                                         description=self.help)
+        parser = argparse.ArgumentParser(prog=self.name, description=self.help)
         parser.add_argument("-v",
                             "--version",
                             action="version",
