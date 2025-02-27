@@ -30,6 +30,9 @@ to install docker engine.
 
     ```bash=
     ./install.sh
+
+    # activate shell completion
+    activate-global-python-argcomplete
     ```
 3. Create a container:
 
