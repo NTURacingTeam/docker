@@ -110,6 +110,9 @@ To use the command line tool globally with shell completion, run:
 
 ```bash=
 ./install.sh
+
+# activate shell completion
+activate-global-python-argcomplete
 ```
 
 ### Usage
@@ -142,7 +145,7 @@ By default, containers are isolated from host network. We can use `--network hos
 
 ### Support for Nvidia GPU in Docker
 
-Docker containers may access nvidia GPU but it requires special setup, checkout how to setup nvidia docker support: [How to Use an NVIDIA GPU with Docker Containers](https://www.howtogeek.com/devops/how-to-use-an-nvidia-gpu-with-docker-containers/).
+Docker containers may access nvidia GPU but it requires special setup, checkout how to setup nvidia docker support: [Installing the NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 Containers can access nvidia GPU by using `host-nvidia` mode when creating a container as:
 
